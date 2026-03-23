@@ -366,20 +366,40 @@ function setToolCat(cat) {
 // BLOG
 // ═══════════════════════════════════════
 
-document.getElementById('blog-list').innerHTML = filtered.map(p => {
-  const col = getColor(blogColors, p.category, { bg: 'rgba(255,255,255,0.08)', tagBg: 'rgba(255,255,255,0.08)', tagColor: '#aaa' });
-  return `
-    <a href="${p.url}" class="blog-card">
-      <div class="blog-thumb" style="background:${col.bg}">${p.emoji}</div>
-      <div class="blog-body">
-        <div class="blog-title">${p.title}</div>
-        <div class="blog-meta">${p.date} · ${p.author}</div>
-        <p class="blog-excerpt">${p.excerpt}</p>
-        <span class="blog-tag" style="background:${col.tagBg};color:${col.tagColor}">${p.category}</span>
-      </div>
-      <div class="blog-mins">${p.readTime} de lecture</div>
-    </a>`;
-}).join('');
+function renderBlog() {
+  const cats = ['Tous', ...new Set(state.blog.map(p => p.category))];
+
+  document.getElementById('blog-filters').innerHTML = cats.map(c =>
+    `<button class="filter${c === state.activeBlogCat ? ' active' : ''}"
+      onclick="setBlogCat('${c}')">${c}</button>`
+  ).join('');
+
+  const filtered = state.blog.filter(p =>
+    state.activeBlogCat === 'Tous' || p.category === state.activeBlogCat
+  );
+
+  if (!filtered.length) { showEmpty('blog-list'); return; }
+
+  document.getElementById('blog-list').innerHTML = filtered.map(p => {
+    const col = getColor(blogColors, p.category, {
+      bg: 'rgba(255,255,255,0.08)',
+      tagBg: 'rgba(255,255,255,0.08)',
+      tagColor: '#aaa'
+    });
+
+    return `
+      <a href="${p.url}" class="blog-card">
+        <div class="blog-thumb" style="background:${col.bg}">${p.emoji}</div>
+        <div class="blog-body">
+          <div class="blog-title">${p.title}</div>
+          <div class="blog-meta">${p.date} · ${p.author}</div>
+          <p class="blog-excerpt">${p.excerpt}</p>
+          <span class="blog-tag" style="background:${col.tagBg};color:${col.tagColor}">${p.category}</span>
+        </div>
+        <div class="blog-mins">${p.readTime} de lecture</div>
+      </a>`;
+  }).join('');
+}
 
 // ═══════════════════════════════════════
 // GALLERY
