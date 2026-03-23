@@ -367,58 +367,65 @@ function setToolCat(cat) {
 // ═══════════════════════════════════════
 
 function renderBlog() {
-  const container = document.getElementById('blog-list');
-  const filterContainer = document.getElementById('blog-filters');
+    const container = document.getElementById('blog-list');
+    const filterContainer = document.getElementById('blog-filters');
 
-  // Rendu des boutons de filtres
-  const cats = ['Tous', ...new Set(state.blog.map(p => p.category))];
-  filterContainer.innerHTML = cats.map(c => `
-    <button class="filter ${c === state.activeBlogCat ? 'active' : ''}" onclick="setBlogCat('${c}')">
-      ${c}
-    </button>
-  `).join('');
+    if (!container || !filterContainer) return;
 
-  // Filtrage
-  const filtered = state.blog.filter(p =>
-    state.activeBlogCat === 'Tous' || p.category === state.activeBlogCat
-  );
+    // 1. Rendu des boutons de filtres
+    const cats = ['Tous', ...new Set(state.blog.map(p => p.category))];
+    filterContainer.innerHTML = cats.map(c => `
+        <button class="filter ${c === state.activeBlogCat ? 'active' : ''}" 
+                onclick="setBlogCat('${c}')">
+            ${c}
+        </button>
+    `).join('');
 
-  if (!filtered.length) {
-    container.innerHTML = '<p>Aucun article.</p>';
-    return;
-  }
+    // 2. Filtrage des articles
+    const filtered = state.blog.filter(p =>
+        state.activeBlogCat === 'Tous' || p.category === state.activeBlogCat
+    );
 
-  // Rendu des cartes cliquables
-  container.innerHTML = filtered.map(p => {
-    const col = getColor(blogColors, p.category, { 
-      bg: 'rgba(255,255,255,0.08)', 
-      tagBg: 'rgba(255,255,255,0.08)', 
-      tagColor: '#aaa' 
-    });
+    if (!filtered.length) { 
+        showEmpty('blog-list', 'Aucun article disponible.'); 
+        return; 
+    }
 
-    return `
-      <a href="${p.url}" class="blog-link-wrapper">
-        <article class="blog-card">
-          <div class="blog-thumb" style="background:${col.bg}">${p.emoji}</div>
-          <div class="blog-body">
-            <h3 class="blog-title">${p.title}</h3>
-            <div class="blog-meta">${p.date} · ${p.author}</div>
-            <p class="blog-excerpt">${p.excerpt}</p>
-            <span class="blog-tag" style="background:${col.tagBg}; color:${col.tagColor}">
-              ${p.category}
-            </span>
-          </div>
-          <div class="blog-mins">${p.readTime} de lecture</div>
-        </article>
-      </a>
-    `;
-  }).join('');
+    // 3. Rendu des cartes (On utilise une balise <a> pour que TOUTE la carte soit un lien)
+    container.innerHTML = filtered.map(p => {
+        const col = getColor(blogColors, p.category, { 
+            bg: 'rgba(255,255,255,0.08)', 
+            tagBg: 'rgba(255,255,255,0.08)', 
+            tagColor: '#aaa' 
+        });
+
+        // Sécurité : si p.url n'existe pas dans votre JSON, on met un lien vide '#'
+        const link = p.url || '#';
+
+        return `
+            <a href="${link}" class="blog-card-link" style="text-decoration:none; color:inherit; display:block;">
+                <article class="blog-card">
+                    <div class="blog-thumb" style="background:${col.bg}">${p.emoji}</div>
+                    <div class="blog-body">
+                        <div class="blog-title" style="font-weight:bold; margin-bottom:5px;">${p.title}</div>
+                        <div class="blog-meta">${p.date} · ${p.author}</div>
+                        <p class="blog-excerpt">${p.excerpt}</p>
+                        <span class="blog-tag" style="background:${col.tagBg}; color:${col.tagColor}">
+                            ${p.category}
+                        </span>
+                    </div>
+                    <div class="blog-mins">${p.readTime} de lecture</div>
+                </article>
+            </a>
+        `;
+    }).join('');
 }
 
 function setBlogCat(cat) {
-  state.activeBlogCat = cat;
-  renderBlog();
+    state.activeBlogCat = cat;
+    renderBlog();
 }
+
 
 // ═══════════════════════════════════════
 // GALLERY
