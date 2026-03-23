@@ -367,38 +367,57 @@ function setToolCat(cat) {
 // ═══════════════════════════════════════
 
 function renderBlog() {
+  const container = document.getElementById('blog-list');
+  const filterContainer = document.getElementById('blog-filters');
+
+  // Rendu des boutons de filtres
   const cats = ['Tous', ...new Set(state.blog.map(p => p.category))];
+  filterContainer.innerHTML = cats.map(c => `
+    <button class="filter ${c === state.activeBlogCat ? 'active' : ''}" onclick="setBlogCat('${c}')">
+      ${c}
+    </button>
+  `).join('');
 
-  document.getElementById('blog-filters').innerHTML = cats.map(c =>
-    `<button class="filter${c === state.activeBlogCat ? ' active' : ''}"
-      onclick="setBlogCat('${c}')">${c}</button>`
-  ).join('');
-
+  // Filtrage
   const filtered = state.blog.filter(p =>
     state.activeBlogCat === 'Tous' || p.category === state.activeBlogCat
   );
 
-  if (!filtered.length) { showEmpty('blog-list'); return; }
+  if (!filtered.length) {
+    container.innerHTML = '<p>Aucun article.</p>';
+    return;
+  }
 
-  document.getElementById('blog-list').innerHTML = filtered.map(p => {
-    const col = getColor(blogColors, p.category, {
-      bg: 'rgba(255,255,255,0.08)',
-      tagBg: 'rgba(255,255,255,0.08)',
-      tagColor: '#aaa'
+  // Rendu des cartes cliquables
+  container.innerHTML = filtered.map(p => {
+    const col = getColor(blogColors, p.category, { 
+      bg: 'rgba(255,255,255,0.08)', 
+      tagBg: 'rgba(255,255,255,0.08)', 
+      tagColor: '#aaa' 
     });
 
     return `
-      <a href="${p.url}" class="blog-card">
-        <div class="blog-thumb" style="background:${col.bg}">${p.emoji}</div>
-        <div class="blog-body">
-          <div class="blog-title">${p.title}</div>
-          <div class="blog-meta">${p.date} · ${p.author}</div>
-          <p class="blog-excerpt">${p.excerpt}</p>
-          <span class="blog-tag" style="background:${col.tagBg};color:${col.tagColor}">${p.category}</span>
-        </div>
-        <div class="blog-mins">${p.readTime} de lecture</div>
-      </a>`;
+      <a href="${p.url}" class="blog-link-wrapper">
+        <article class="blog-card">
+          <div class="blog-thumb" style="background:${col.bg}">${p.emoji}</div>
+          <div class="blog-body">
+            <h3 class="blog-title">${p.title}</h3>
+            <div class="blog-meta">${p.date} · ${p.author}</div>
+            <p class="blog-excerpt">${p.excerpt}</p>
+            <span class="blog-tag" style="background:${col.tagBg}; color:${col.tagColor}">
+              ${p.category}
+            </span>
+          </div>
+          <div class="blog-mins">${p.readTime} de lecture</div>
+        </article>
+      </a>
+    `;
   }).join('');
+}
+
+function setBlogCat(cat) {
+  state.activeBlogCat = cat;
+  renderBlog();
 }
 
 // ═══════════════════════════════════════
