@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="AnnuaireIA — Outils, blog et galerie d'œuvres générées par intelligence artificielle.">
+  <title>AnnuaireIA — Explorez l'univers de l'intelligence artificielle</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ─── NAVIGATION ─── -->
+  <nav>
+    <div class="logo">Annuaire<span class="dot">IA</span></div>
+    <div class="nav-links">
+      <button class="nav-link active" data-page="home">Accueil</button>
+      <button class="nav-link" data-page="tools">Outils</button>
+      <button class="nav-link" data-page="blog">Blog</button>
+      <button class="nav-link" data-page="gallery">Galerie</button>
+      <button class="nav-link" data-page="favorites">♥ Favoris <span class="fav-count" id="nav-fav-count"></span></button>
+    </div>
+    <button class="nav-cta" id="open-submit-btn">Soumettre un outil +</button>
+  </nav>
+
+  <!-- ─── MODAL : SOUMETTRE UN OUTIL ─── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h3 id="modal-title">Soumettre un outil IA</h3>
+        <button class="modal-close" id="modal-close" aria-label="Fermer">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label" for="f-name">Nom de l'outil <span class="req">*</span></label>
+          <input class="form-input" id="f-name" type="text" placeholder="ex: ChatGPT" maxlength="60">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-url">URL officielle <span class="req">*</span></label>
+          <input class="form-input" id="f-url" type="url" placeholder="https://...">
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label class="form-label" for="f-cat">Catégorie <span class="req">*</span></label>
+            <select class="form-input" id="f-cat">
+              <option value="">-- Choisir --</option>
+              <option>Texte</option>
+              <option>Image</option>
+              <option>Vidéo</option>
+              <option>Audio</option>
+              <option>Musique</option>
+              <option>Code</option>
+              <option>Recherche</option>
+              <option>Productivité</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" for="f-price">Tarification <span class="req">*</span></label>
+            <select class="form-input" id="f-price">
+              <option value="">-- Choisir --</option>
+              <option value="free">Gratuit</option>
+              <option value="freemium">Freemium</option>
+              <option value="paid">Payant</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-desc">Description courte <span class="req">*</span></label>
+          <textarea class="form-input form-textarea" id="f-desc" placeholder="Décrivez l'outil en 1 ou 2 phrases..." maxlength="200" rows="3"></textarea>
+          <span class="char-count" id="f-desc-count">0 / 200</span>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-emoji">Emoji représentatif</label>
+          <input class="form-input" id="f-emoji" type="text" placeholder="🤖" maxlength="4" style="width:80px">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-email">Votre email (optionnel)</label>
+          <input class="form-input" id="f-email" type="email" placeholder="vous@email.com">
+        </div>
+        <div id="form-error" class="form-error" style="display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline" id="modal-cancel">Annuler</button>
+        <button class="btn-main" id="modal-submit">Envoyer la soumission</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── TOAST NOTIFICATION ─── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ─── PAGE : ACCUEIL ─── -->
+  <section id="home" class="page active">
+    <div class="hero">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        Nouvelle plateforme
+      </div>
+
+      <h1>Explorez<br>l'univers de <span class="grad">l'IA</span></h1>
+      <p>Outils, articles et œuvres générées par intelligence artificielle — tout en un seul endroit pour le grand public.</p>
+
+      <div class="hero-actions">
+        <button class="btn-main" onclick="showPage('tools')">Explorer les outils</button>
+        <button class="btn-outline" onclick="showPage('gallery')">Voir la galerie</button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-blue">
+          <div class="stat-n">120+</div>
+          <div class="stat-l">Outils IA</div>
+        </div>
+        <div class="stat-pink">
+          <div class="stat-n">48</div>
+          <div class="stat-l">Articles</div>
+        </div>
+        <div class="stat-green">
+          <div class="stat-n">300+</div>
+          <div class="stat-l">Œuvres créatives</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PAGE : OUTILS ─── -->
+  <section id="tools" class="page">
+    <div class="container">
+      <div class="page-header">
+        <h2 class="page-title">Outils & logiciels IA</h2>
+        <p class="page-sub">Découvrez les meilleurs outils d'intelligence artificielle, classés et évalués.</p>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input
+          class="search-input"
+          id="tool-search"
+          type="text"
+          placeholder="Rechercher un outil, une catégorie, un tag..."
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="filters" id="tool-filters">
+        <!-- Généré par JS -->
+      </div>
+
+      <div class="tools-grid" id="tools-grid">
+        <div class="loading"><div class="spinner"></div>Chargement des outils...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PAGE : BLOG ─── -->
+  <section id="blog" class="page">
+    <div class="container">
+      <div class="page-header">
+        <h2 class="page-title">Blog IA</h2>
+        <p class="page-sub">Articles, guides et tutoriels sur l'intelligence artificielle pour tous.</p>
+      </div>
+
+      <div class="filters" id="blog-filters">
+        <!-- Généré par JS -->
+      </div>
+
+      <div class="blog-list" id="blog-list">
+        <div class="loading"><div class="spinner"></div>Chargement des articles...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PAGE : GALERIE ─── -->
+  <section id="gallery" class="page">
+    <div class="container">
+      <div class="page-header">
+        <h2 class="page-title">Galerie IA</h2>
+        <p class="page-sub">Images, vidéos et musiques générées par intelligence artificielle.</p>
+      </div>
+
+      <div class="filters" id="gallery-filters">
+        <!-- Généré par JS -->
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid">
+        <div class="loading"><div class="spinner"></div>Chargement de la galerie...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PAGE : FAVORIS ─── -->
+  <section id="favorites" class="page">
+    <div class="container">
+      <div class="page-header">
+        <h2 class="page-title">Mes favoris</h2>
+        <p class="page-sub">Les outils que vous avez sauvegardés, accessibles à tout moment.</p>
+      </div>
+      <div class="tools-grid" id="fav-grid">
+        <!-- Généré par JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    Fait avec ❤️ par <a href="#">AnnuaireIA</a> &copy; 2025 — Tous droits réservés
+  </footer>
+
+  <!-- Script galerie (lightbox, zoom, swipe) -->
+  <script src="js/gallery.js"></script>
+
+  <!-- Script principal -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
