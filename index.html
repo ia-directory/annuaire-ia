@@ -6,8 +6,59 @@
   <meta name="theme-color" content="#0a0a0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="AnnuaireIA — Outils, blog et galerie d'œuvres générées par intelligence artificielle.">
   <title>AnnuaireIA — Explorez l'univers de l'intelligence artificielle</title>
+  <meta name="description" content="Annuaire IA vous propose une sélection des meilleurs outils d’intelligence artificielle, un blog expert et une galerie d’images générées par IA. Découvrez les tendances IA 2026.">
+  <meta name="keywords" content="outils IA, intelligence artificielle 2026, générateur IA, blog IA, annuaire IA, AI tools, AI directory, image IA">
+  <meta name="author" content="Annuaire IA">
+  <meta name="robots" content="index, follow">
+
+<!-- Responsive -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- URL officielle -->
+<link rel="canonical" href="https ://ia-directory.github.io/annuaire-ia/">
+
+<!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+<meta property="og:title" content="Annuaire IA 2026 — Découvrez les meilleurs outils IA">
+<meta property="og:description" content="Explorez les meilleurs outils d’intelligence artificielle, un blog spécialisé et une galerie d’images IA.">
+<meta property="og:image" content="https ://ia-directory.github.io/annuaire-ia/assets/images/preview.jpg">
+<meta property="og:url" content="https ://ia-directory.github.io/annuaire-ia/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Annuaire IA">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Annuaire IA — Outils & Galerie IA 2026">
+<meta name="twitter:description" content="Découvrez les meilleures intelligences artificielles du moment.">
+<meta name="twitter:image" content="https ://ia-directory.github.io/annuaire-ia/assets/images/preview.jpg">
+
+<!-- Favicon / Logo -->
+<link rel="icon" href="https ://ia-directory.github.io/annuaire-ia/assets/images/logo.png" type="image/png">
+
+
+<!-- Données structurées SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Annuaire IA",
+  "url": "https ://ia-directory.github.io/annuaire-ia/",
+  "description": "Annuaire des meilleurs outils d’intelligence artificielle avec blog et galerie d’images IA.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Annuaire IA",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https ://ia-directory.github.io/annuaire-ia/assets/images/logo.png"
+    }
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https ://ia-directory.github.io/annuaire-ia/?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +80,7 @@
       <button class="nav-link" data-page="gallery">Galerie</button>
       <button class="nav-link" data-page="favorites">♥ Favoris <span class="fav-count" id="nav-fav-count"></span></button>
     </div>
-    <button class="nav-cta" id="open-submit-btn">Soumettre un outil +</button>
+ 
   </nav>
 
   <!-- ─── MODAL : SOUMETTRE UN OUTIL ─── -->
@@ -211,79 +262,8 @@
   </section>
 
   <!-- ─── FOOTER ─── -->
-  <footer class="site-footer">
-    <div class="footer-top">
-      <div class="container">
-        <div class="footer-grid">
-
-          <!-- Colonne 1 : Brand + Newsletter + Réseaux -->
-          <div class="footer-brand">
-            <div class="footer-logo"><span class="dot"></span></div>
-            <p class="footer-desc"></p>
-
-            
-
-            <div class="footer-newsletter">
-              <div class="footer-nl-label">Newsletter hebdomadaire</div>
-              <form class="footer-nl-row" action="https://formspree.io/f/VOTRE_ID_FORMSPREE" method="POST" id="newsletter-form">
-                <input type="email" name="email" id="footer-email" class="footer-nl-input" placeholder="votre@email.com" required>
-                <input type="hidden" name="_subject" value="Nouvelle inscription newsletter AnnuaireIA">
-                <button type="submit" class="footer-nl-btn">S'abonner</button>
-              </form>
-              <div class="footer-nl-badge" id="nl-feedback">✓ Gratuit · Sans spam · Désabonnement en 1 clic</div>
-            </div>
-
-            <div class="footer-social">
-              <a href="#" class="footer-soc" aria-label="Twitter/X" title="Twitter/X">𝕏</a>
-              <a href="#" class="footer-soc" aria-label="LinkedIn" title="LinkedIn">in</a>
-              <a href="#" class="footer-soc" aria-label="YouTube" title="YouTube">▶</a>
-              <a href="#" class="footer-soc" aria-label="Instagram" title="Instagram">◉</a>
-            </div>
-          </div>
-
-          <!-- Colonne 2 : Navigation -->
-          <div class="footer-col">
-            <div class="footer-col-title">Navigation</div>
-            <button class="footer-link" onclick="showPage('home')">Accueil</button>
-            <button class="footer-link" onclick="showPage('tools')">Outils IA</button>
-            <button class="footer-link" onclick="showPage('blog')">Blog</button>
-            <button class="footer-link" onclick="showPage('gallery')">Galerie</button>
-            <button class="footer-link" onclick="showPage('favorites')">Mes favoris</button>
-            <button class="footer-link" onclick="openModal()">Soumettre un outil</button>
-          </div>
-
-          
-
-          <!-- Colonne 4 : Légal + Contact -->
-          <div class="footer-col">
-            <div class="footer-col-title">Légal</div>
-            <a href="mentions-legales.html" class="footer-link">Mentions légales</a>
-            <a href="politique-confidentialite.html" class="footer-link">Politique de confidentialité</a>
-            <a href="mentions-legales.html#cgu" class="footer-link">Conditions d'utilisation</a>
-            <a href="mentions-legales.html#cookies" class="footer-link">Gestion des cookies</a>
-
-            <div class="footer-col-title" style="margin-top: 20px;">Contact</div>
-            <a href="contact.html" class="footer-link">Nous contacter</a>
-            <a href="mailto:contact@annuaireia.com" class="footer-link">contact@annuaireia.com</a>
-            <a href="mailto:partenariats@annuaireia.com" class="footer-link">Partenariats</a>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Barre de bas de footer -->
-    <div class="footer-bottom">
-      <div class="container footer-bottom-inner">
-        <span class="footer-copy">&copy; 2025-2026 AnnuaireIA — Tous droits réservés</span>
-        <div class="footer-legal-links">
-          <a href="politique-confidentialite.html" class="footer-legal-link">Vie privée</a>
-          <a href="mentions-legales.html#cgu" class="footer-legal-link">CGU</a>
-          <a href="mentions-legales.html#cookies" class="footer-legal-link">Cookies</a>
-        </div>
-        <span class="footer-made">Fait avec ❤️ pour la communauté IA</span>
-      </div>
-    </div>
+  <footer>
+    Fait avec ❤️ pour la communauté IA   
   </footer>
 
   <!-- Script lecteur blog -->
