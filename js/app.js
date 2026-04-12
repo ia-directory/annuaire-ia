@@ -443,28 +443,23 @@ function renderBlog() {
     const col = getColor(blogColors, p.category, { bg: 'rgba(255,255,255,0.08)', tagBg: 'rgba(255,255,255,0.08)', tagColor: '#aaa' });
     const href = p.url ? p.url : '#';
 
-    // Image de couverture avec fallback emoji
+    // Image pleine largeur avec fallback emoji
     const thumbContent = p.image
-      ? `<img
-           src="${p.image}"
-           alt="${p.title}"
-           class="blog-thumb-img"
-           loading="lazy"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-         <span class="blog-thumb-emoji" style="display:none">${p.emoji || '📝'}</span>`
-      : `<span class="blog-thumb-emoji">${p.emoji || '📝'}</span>`;
+      ? `<img src="${p.image}" alt="${p.title}" loading="lazy"
+             onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:48px>${p.emoji || '📝'}</span>'">`
+      : `<span>${p.emoji || '📝'}</span>`;
 
     return `
       <a href="${href}" class="blog-card-link" style="text-decoration:none;display:block;">
         <article class="blog-card">
-          <div class="blog-thumb blog-thumb-wrap">${thumbContent}</div>
+          <div class="blog-thumb">${thumbContent}</div>
           <div class="blog-body">
             <div class="blog-title">${p.title}</div>
             <div class="blog-meta">${p.date} · ${p.author}</div>
             <p class="blog-excerpt">${p.excerpt}</p>
             <span class="blog-tag" style="background:${col.tagBg};color:${col.tagColor}">${p.category}</span>
           </div>
-          <div class="blog-mins">${p.readTime} de lecture</div>
+          <div class="blog-mins">⏱ ${p.readTime} de lecture</div>
         </article>
       </a>`;
   }).join('');
