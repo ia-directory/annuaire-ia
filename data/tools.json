@@ -179,6 +179,7 @@
       "organisation",
       "productivité"
     ]
+    "page": "tools/notion ai.html"
   },
   {
     "id": 12,
@@ -483,6 +484,7 @@
       "écriture",
       "correction"
     ]
+    "page": "tools/grammarly.html"
   },
   {
     "id": 31,
@@ -499,6 +501,7 @@
       "rédaction",
       "contenu"
     ]
+    "page": "tools/jasper.html"
   },
   {
     "id": 32,
@@ -515,6 +518,7 @@
       "marketing",
       "SEO"
     ]
+    "page": "tools/copyai.html"
   },
   {
     "id": 33,
@@ -531,6 +535,7 @@
       "rédaction",
       "blog"
     ]
+    "page": "tools/writesonic.html"
   },
   {
     "id": 34,
