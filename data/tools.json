@@ -97,7 +97,8 @@
       "code",
       "développement",
       "productivité"
-    ]
+    ],
+    "page": "tools/github-copilot.html"
   },
   {
     "id": 7,
@@ -113,7 +114,8 @@
       "vidéo",
       "effets",
       "création"
-    ]
+    ],
+    "page": "tools/runway.html"
   },
   {
     "id": 8,
@@ -323,7 +325,8 @@
       "avatars",
       "vidéo",
       "langues"
-    ]
+    ],
+    "page": "tools/synthesia.html"
   },
   {
     "id": 21,
@@ -339,7 +342,8 @@
       "avatars",
       "marketing",
       "vidéo"
-    ]
+    ],
+    "page": "tools/heygen.html"
   },
   {
     "id": 22,
@@ -583,7 +587,8 @@
       "no-code",
       "application",
       "développement"
-    ]
+    ],
+    "page": "tools/lovable.html"
   },
   {
     "id": 37,
@@ -615,7 +620,8 @@
       "code",
       "éditeur",
       "développement"
-    ]
+    ],
+    "page": "tools/cursor.html"
   },
   {
     "id": 39,
@@ -631,7 +637,8 @@
       "IDE",
       "cloud",
       "développement"
-    ]
+    ],
+    "page": "tools/replit.html"
   },
   {
     "id": 40,
@@ -1402,22 +1409,6 @@
     ]
   },
   {
-    "id": 88,
-    "name": "Notion AI",
-    "category": "Productivité",
-    "emoji": "📓",
-    "favicon": "https://www.google.com/s2/favicons?sz=64&domain=notion.so",
-    "description": "IA intégrée à Notion pour générer, résumer et améliorer vos documents et bases de données.",
-    "price": "paid",
-    "rating": 4,
-    "url": "https://notion.so/product/ai",
-    "tags": [
-      "productivité",
-      "documents",
-      "notes"
-    ]
-  },
-  {
     "id": 89,
     "name": "Mem AI",
     "category": "Productivité",
@@ -1991,7 +1982,8 @@
       "vidéo",
       "mobile",
       "édition"
-    ]
+    ],
+    "page": "tools/capcut.html""
   },
   {
     "id": 125,
