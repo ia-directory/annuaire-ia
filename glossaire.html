@@ -425,6 +425,61 @@
     .no-results .no-results-ico { font-size: 40px; margin-bottom: 12px; }
 
     /* ── RESPONSIVE ── */
+    /* ── CORRECTIONS RESPONSIVE ── */
+@media (max-width: 768px) {
+  /* Ajustement des marges globales */
+  .glossaire-hero, .terme-jour-wrap, .glossaire-controls, .glossaire-body, .glossaire-cta {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  /* Correction du cercle lumineux qui dépasse */
+  .glossaire-hero::before {
+    width: 100%;
+    height: 200px;
+  }
+
+  /* Stats du hero : on les empile pour éviter qu'elles sortent de l'écran */
+  .glossaire-hero div[style*="display:flex"] {
+    flex-direction: column;
+    gap: 20px !important;
+  }
+
+  /* Grille des termes : on force une seule colonne propre */
+  .terms-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Terme du jour : on passe l'icône au dessus */
+  .terme-jour {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* CTA Affilié : on empile les boutons */
+  .glossaire-cta-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .glossaire-cta-tools {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .cta-tool-btn {
+    flex: 1; /* Les boutons prennent la largeur dispo */
+    text-align: center;
+  }
+}
+
+/* Correction spécifique pour éviter le défilement horizontal */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
    
   </style>
 </head>
