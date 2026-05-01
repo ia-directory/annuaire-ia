@@ -462,13 +462,58 @@
     .deal-card.hidden { display: none; }
 
     /* ── RESPONSIVE ── */
+    /* ── FIX RESPONSIVE & ESPACE EN TROP ── */
+    
+    /* Empêche globalement le scroll horizontal */
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
     @media (max-width: 768px) {
-      .deals-hero { padding: 48px 20px 32px; }
-      .deals-controls, .deals-section, .deals-newsletter { padding-left: 20px; padding-right: 20px; }
-      .deals-grid { grid-template-columns: 1fr; }
-      .deals-stats { gap: 24px; }
-      .newsletter-card { padding: 28px 20px; flex-direction: column; }
-      .newsletter-form { max-width: 100%; width: 100%; }
+      /* 1. On réduit le cercle lumineux qui dépasse */
+      .deals-hero::before {
+        width: 100%;
+        height: 200px;
+        filter: blur(40px);
+      }
+
+      /* 2. On réduit les paddings pour gagner de la place */
+      .deals-hero, .deals-controls, .deals-section, .deals-newsletter {
+        padding-left: 16px; 
+        padding-right: 16px;
+      }
+
+      /* 3. On empile les stats pour éviter qu'elles sortent de l'écran */
+      .deals-stats {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .deals-stats > div {
+        flex: 1 1 120px; /* Permet d'en mettre 2 par ligne puis 1 */
+      }
+
+      /* 4. On s'assure que les cartes prennent toute la largeur sans déborder */
+      .deals-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      /* 5. Newsletter : on empile les éléments */
+      .newsletter-card {
+        padding: 24px 16px;
+        flex-direction: column;
+        text-align: center;
+      }
+      .newsletter-form {
+        max-width: 100%;
+        width: 100%;
+      }
+      .newsletter-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
