@@ -998,3 +998,19 @@ window.closeQuiz     = closeQuiz;
 window.restartQuiz   = restartQuiz;
 window.copyQuizLink  = copyQuizLink;
 window.shareWhatsApp = shareWhatsApp;
+
+// ── NAVIGATION DEPUIS LES PAGES SECONDAIRES ──
+// Si l'URL contient un hash (#tools, #blog, #gallery)
+// afficher directement la bonne section
+(function() {
+  const hash = window.location.hash.replace('#', '');
+  const pages = ['tools', 'blog', 'gallery', 'favorites'];
+  if (pages.includes(hash)) {
+    // Attendre que showPage soit disponible
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof showPage === 'function') {
+        showPage(hash);
+      }
+    });
+  }
+})();
