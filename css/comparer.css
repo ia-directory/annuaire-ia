@@ -473,17 +473,4 @@ nav {
 
 .cp-back:hover { color: var(--text); }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  nav { padding: 14px 20px; }
-  .cp-hero { padding: 40px 20px 28px; }
-  .cp-hero h1 .vs-sep { margin: 0 8px; }
-  .cp-tools-header { flex-direction: column; gap: 12px; padding: 0 20px; }
-  .cp-vs-divider { transform: rotate(90deg); }
-  .cp-section { padding: 0 20px; }
-  .cp-pros-cons { grid-template-columns: 1fr; }
-  .cp-cas-grid { grid-template-columns: 1fr; }
-  .cp-verdict-card { padding: 24px 20px; }
-  .cp-cta-wrap { flex-direction: column; }
-  .cp-cta-btn { min-width: unset; }
-}
+
