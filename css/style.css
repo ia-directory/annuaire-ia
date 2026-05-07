@@ -2518,6 +2518,20 @@ nav .logo { display: flex; align-items: center; }
     max-width: 280px;
   }
 }
+.kebab-menu {
+  /* Garde tout ton code existant, mais ajoute ceci : */
+  max-height: 75vh;        /* Empêche de dépasser en bas */
+  overflow-y: auto;        /* Permet de scroller dans le menu */
+  max-width: 85vw;         /* Empêche de dépasser sur les côtés */
+  -webkit-overflow-scrolling: touch; /* Fluidité sur iPhone */
+}
+
+@media (max-width: 768px) {
+  .kebab-menu {
+    right: 0;             /* Aligne bien à droite */
+    top: calc(100% + 5px); /* Colle un peu plus au bouton */
+  }
+   }
 
 /* ════════════════════════════════════════
    HUB — Page Hub Central
