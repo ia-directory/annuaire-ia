@@ -485,16 +485,74 @@ html, body {
 </head>
 <body>
 
+
 <!-- ── NAVIGATION ── -->
 <nav>
   <div class="logo">albe<span style="color:#ff6b9d">x</span>ia</div>
   <div class="nav-links">
     <button class="nav-link" onclick="window.location.href='index.html'">Accueil</button>
-    <button class="nav-link" onclick="window.location.href='index.html#tools'">Annuaire</button>
+    <button class="nav-link" onclick="window.location.href='index.html#tools'">Outils</button>
     <button class="nav-link" onclick="window.location.href='index.html#blog'">Blog</button>
-    <button class="nav-link" onclick="window.location.href='pages/deals.html'">Deals</button>
+    <button class="nav-link" onclick="location.href='index.html#blog'">Blog</button>
+    <button class="nav-link" onclick="location.href='index.html#gallery'">Galerie</button>
     <button class="nav-link active">Glossaire</button>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════
+     NOUVEAU MENU KEBAB — Albexia
+     Remplace l'ancien kebab-wrap dans toutes les pages.
+     Top 3 des incontournables + lien vers le Hub complet.
+     ═══════════════════════════════════════════════════ -->
+
+<div class="kebab-wrap" id="kebab-wrap">
+  <button class="kebab-btn" id="kebab-btn" aria-label="Plus de pages" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="kebab-menu" id="kebab-menu" role="menu">
+
+    <!-- Top 3 des pages incontournables -->
+    <div class="kebab-label">Incontournables</div>
+
+    <a href="glossaire.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">📖</span>
+      <div>
+        <div class="kebab-item-name">Glossaire IA</div>
+        <div class="kebab-item-sub">Tous les termes en français</div>
+      </div>
+    </a>
+
+    <a href="comparateur.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">⚖️</span>
+      <div>
+        <div class="kebab-item-name">Comparateur</div>
+        <div class="kebab-item-sub">Comparer les outils côte à côte</div>
+      </div>
+    </a>
+
+    <a href="deals.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">🔥</span>
+      <div>
+        <div class="kebab-item-name">Deals &amp; Promos</div>
+        <div class="kebab-item-sub">Essais gratuits · Offres exclusives</div>
+      </div>
+    </a>
+
+    <!-- Séparateur -->
+    <div class="kebab-divider"></div>
+
+    <!-- Lien Hub complet -->
+    <a href="hub.html" class="kebab-item kebab-hub-link" role="menuitem">
+      <span class="kebab-ico">📂</span>
+      <div>
+        <div class="kebab-item-name">Voir toutes les sections</div>
+        <div class="kebab-item-sub">Carte complète d'Albexia →</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
 </nav>
 
 <!-- ── HERO ── -->
