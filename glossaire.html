@@ -826,6 +826,24 @@ function resetFilters() {
 window.resetFilters = resetFilters;
 
 loadGlossaire();
+
+ 
+  // Kebab toggle
+  const kebabBtn = document.getElementById('kebab-btn');
+  const kebabMenu = document.getElementById('kebab-menu');
+  if (kebabBtn && kebabMenu) {
+    kebabBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = kebabMenu.classList.toggle('open');
+      kebabBtn.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', () => {
+      kebabMenu.classList.remove('open');
+      kebabBtn.setAttribute('aria-expanded', 'false');
+    });
+    kebabMenu.addEventListener('click', e => e.stopPropagation());
+  }
+
 </script>
 </body>
 </html>
