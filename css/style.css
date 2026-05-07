@@ -2415,13 +2415,14 @@ nav .logo { display: flex; align-items: center; }
 }
 
 /* ════════════════════════════════════════
-   MENU KEBAB - ALBEXIA (CORRIGÉ)
+   MENU KEBAB - ALBEXIA (VERSION FINALE)
    ════════════════════════════════════════ */
 
 .kebab-wrap {
   position: relative;
   margin-left: 8px;
-  display: inline-block; /* Assure que le bouton garde sa place */
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .kebab-btn {
@@ -2460,25 +2461,27 @@ nav .logo { display: flex; align-items: center; }
   display: none;
   position: absolute;
   top: calc(100% + 10px); 
-  right: 0; /* Aligné à droite par défaut */
+  right: 0; 
   width: 260px;
   
-  /* --- Sécurités pour éviter que ça dépasse --- */
-  max-width: 90vw;           /* Max 90% de la largeur de l'écran */
-  max-height: 75vh;          /* Max 75% de la hauteur de l'écran */
-  overflow-y: auto;          /* Scroll interne si trop long */
-  -webkit-overflow-scrolling: touch; /* Scroll fluide mobile */
+  /* Sécurités indispensables */
+  max-width: 280px;
+  max-height: 75vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   
   background: var(--bg2);
   border: 1px solid var(--border-hover);
   border-radius: 16px;
   padding: 10px 8px;
-  z-index: 200;
+  z-index: 9999; /* Priorité maximale */
   box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 4px 16px rgba(0,0,0,0.2);
   animation: kebab-drop .2s cubic-bezier(0.34,1.56,0.64,1);
 }
 
-.kebab-menu.open { display: block; }
+.kebab-menu.open { 
+  display: block !important; 
+}
 
 @keyframes kebab-drop {
   from { opacity: 0; transform: translateY(-8px) scale(0.97); }
@@ -2557,30 +2560,18 @@ nav .logo { display: flex; align-items: center; }
 .kebab-hub-link .kebab-item-name { color: #a8a3ff; }
 .kebab-hub-link .kebab-ico { background: rgba(108,99,255,0.12); }
 
-/* --- Ajustements spécifiques Mobile --- */
+/* --- Ajustements spécifiques Mobile (La Correction) --- */
 @media (max-width: 768px) {
   .kebab-menu {
-    right: 0; /* Aligne le bord droit du menu sur le bouton */
-    width: 280px; /* Largeur confortable */
-    max-width: calc(100vw - 20px); /* Laisse 10px de chaque côté de l'écran */
+    position: fixed; /* Détache le menu de la nav pour éviter qu'il soit coupé */
+    top: 70px;      /* Ajuste cette valeur selon la hauteur de ta nav */
+    right: 15px;    /* Laisse un petit espace avec le bord de l'écran */
+    left: auto;
+    width: calc(100vw - 30px); /* S'adapte à la largeur du téléphone */
+    max-width: 280px;
+    max-height: 70vh;
   }
 }
-  }
-}
-.kebab-menu {
-  /* Garde tout ton code existant, mais ajoute ceci : */
-  max-height: 75vh;        /* Empêche de dépasser en bas */
-  overflow-y: auto;        /* Permet de scroller dans le menu */
-  max-width: 85vw;         /* Empêche de dépasser sur les côtés */
-  -webkit-overflow-scrolling: touch; /* Fluidité sur iPhone */
-}
-
-@media (max-width: 768px) {
-  .kebab-menu {
-    right: 0;             /* Aligne bien à droite */
-    top: calc(100% + 5px); /* Colle un peu plus au bouton */
-  }
-   }
 
 /* ════════════════════════════════════════
    HUB — Page Hub Central
