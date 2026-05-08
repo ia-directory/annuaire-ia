@@ -18,7 +18,7 @@
   "use strict";
 
   /* ─── Paramètres globaux ─────────────────────────────── */
-  const JSON_URL  = "/data/notifications.json"; // chemin vers le fichier
+  const JSON_URL  = "data/notifications.json"; // chemin vers le fichier
   const LS_PREFIX = "albexia_notif_dismissed_";  // clé localStorage
 
   /* ─── Injection CSS (une seule fois) ────────────────── */
