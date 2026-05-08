@@ -118,7 +118,7 @@ function carteHTML(outil) {
           ${videosPrev.map(v => miniatureHTML(v, outil)).join('')}
         </div>
 
-        <a href="tutoriels-outil.html?outil=${outil.id}" class="tuto-voir-tout">
+        <a href="tutoriel-outil.html?outil=${outil.id}" class="tuto-voir-tout">
           Voir tous les tutoriels pour ${outil.nom}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
