@@ -173,6 +173,16 @@
           "type": "video",
           "langue": "fr",
           "canal": "EntrepreneurIA"
+        }'
+        {
+  "id": "v1_chatgpt_16",
+  "youtubeId": "osCQYOnH9hY",
+  "titre": "Devenir Expert en ChatGPT : L'Art du Prompt Engineering",
+  "duree": "0:38",
+  "dureeSecondes": 38,
+  "type": "short",
+  "langue": "fr",
+  "canal": "OpenClassrooms en Français"
         }
       ]
     },
