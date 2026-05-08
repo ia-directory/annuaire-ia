@@ -25,7 +25,7 @@
   "use strict";
 
   /* ─── Constantes ─────────────────────────────────────── */
-  const JSON_URL        = "/data/notifications.json";
+  const JSON_URL        = "data/notifications.json";
   const SS_PREFIX       = "albexia_notif_dismissed_"; // sessionStorage
   const DELAI_INITIAL   = 8000;   // 8s avant la 1re notification
   const DELAI_ENCHAINE  = 10000;  // 10s entre deux notifications
