@@ -1,0 +1,69 @@
+[
+  {
+    "id": "notif-001",
+    "active": true,
+    "type": "guide",
+    "message": "💡 Utilise les filtres par catégorie pour trouver l'outil IA qu'il te faut rapidement."
+  },
+  {
+    "id": "notif-002",
+    "active": true,
+    "type": "guide",
+    "message": "🔍 Tu cherches une IA gratuite ? Filtre par prix dans l'annuaire."
+  },
+  {
+    "id": "notif-003",
+    "active": true,
+    "type": "guide",
+    "message": "📚 Découvre nos articles de blog pour maîtriser les outils IA."
+  },
+  {
+    "id": "notif-004",
+    "active": true,
+    "type": "lien",
+    "tool": {
+      "nom": "Claude",
+      "domaine": "claude.ai"
+    },
+    "message": "Claude 3.5 Sonnet est disponible sur Albexia — découvre sa fiche complète.",
+    "lien": "/outils/claude.html",
+    "cta": "Voir la fiche"
+  },
+  {
+    "id": "notif-005",
+    "active": true,
+    "type": "lien",
+    "tool": {
+      "nom": "Midjourney",
+      "domaine": "midjourney.com"
+    },
+    "message": "Midjourney génère des images époustouflantes — voir la fiche complète.",
+    "lien": "/outils/midjourney.html",
+    "cta": "Voir la fiche"
+  },
+  {
+    "id": "notif-006",
+    "active": true,
+    "type": "lien",
+    "tool": {
+      "nom": "Canva",
+      "domaine": "canva.com"
+    },
+    "message": "Canva Pro : crée des visuels professionnels avec l'IA intégrée.",
+    "lien": "/outils/canva.html",
+    "cta": "Découvrir"
+  },
+  {
+    "id": "notif-007",
+    "active": true,
+    "type": "groupe",
+    "outils": [
+      { "nom": "ChatGPT",    "domaine": "chat.openai.com" },
+      { "nom": "Perplexity", "domaine": "perplexity.ai"  },
+      { "nom": "Mistral",    "domaine": "mistral.ai"     }
+    ],
+    "message": "3 outils IA incontournables ajoutés cette semaine.",
+    "lien": "/outils.html",
+    "cta": "Voir l'annuaire"
+  }
+]
