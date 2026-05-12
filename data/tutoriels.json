@@ -35,15 +35,15 @@
           "canal": "FormationIA"
         },
         {
-          "id": "v1_chatgpt_2",
-          "youtubeId": "AsFgTJMKsnI",
-          "titre": "10 prompts ChatGPT qui changent tout",
-          "duree": "0:58",
-          "dureeSecondes": 58,
-          "type": "short",
-          "langue": "fr",
-          "canal": "PromptMaître"
-        },
+  "id": "v1_chatgpt_17",
+  "youtubeId": "MxvWGMPJnfQ",
+  "titre": "Comment utiliser ChatGPT (TUTO Complet)",
+  "duree": "6:29",
+  "dureeSecondes": 389,
+  "type": "video",
+  "langue": "fr",
+  "canal": "Labo Des Réseaux"
+},
         {
           "id": "v1_chatgpt_3",
           "youtubeId": "qbIk7-JPB2c",
