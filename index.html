@@ -703,6 +703,61 @@
   <!-- Script galerie (lightbox, zoom, swipe) -->
   <script src="js/gallery.js"></script>
 
+  <!-- ════════════════════════════════════════════════
+     LIGHTBOX GALERIE v2
+     Coller ce bloc dans index.html,
+     juste avant la balise </body>
+     (après le <script src="js/gallery.js"></script>)
+     ════════════════════════════════════════════════ -->
+
+<div id="lb-overlay" role="dialog" aria-modal="true" aria-label="Visionneuse">
+
+  <!-- Barre haute -->
+  <div id="lb-topbar">
+    <div id="lb-counter"></div>
+    <button id="lb-close" aria-label="Fermer">✕</button>
+  </div>
+
+  <!-- Zone média -->
+  <div id="lb-media-wrap">
+
+    <!-- Flèches de navigation -->
+    <button id="lb-prev" aria-label="Précédent">&#8249;</button>
+    <button id="lb-next" aria-label="Suivant">&#8250;</button>
+
+    <!-- Image -->
+    <img id="lb-img" alt="" draggable="false">
+
+    <!-- Vidéo -->
+    <video id="lb-video" controls playsinline></video>
+
+    <!-- Musique -->
+    <div id="lb-audio-wrap">
+      <div id="lb-audio-art"></div>
+      <div id="lb-audio-title"></div>
+      <audio id="lb-audio" controls></audio>
+    </div>
+
+  </div>
+
+  <!-- Barre basse -->
+  <div id="lb-bottombar">
+    <div id="lb-info">
+      <span id="lb-title"></span>
+      <span id="lb-tool"></span>
+    </div>
+    <div id="lb-zoom-controls">
+      <button id="lb-zoom-out" aria-label="Dézoomer">−</button>
+      <span id="lb-zoom-level">100%</span>
+      <button id="lb-zoom-in" aria-label="Zoomer">+</button>
+      <button id="lb-zoom-reset" aria-label="Réinitialiser">↺</button>
+    </div>
+  </div>
+
+</div>
+
+  
+
   <!-- Script principal -->
   <script src="js/app.js"></script>
 
