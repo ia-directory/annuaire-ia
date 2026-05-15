@@ -216,6 +216,36 @@ nav a.nav-cta {
   margin-bottom: 24px;
 }
 
+   /* --- FIGURE ET IMAGE POUR TOUT L'ARTICLE --- */
+figure.article-image {
+  text-align: center;          /* Centrer la figure */
+  margin: 40px 0;              /* Espacement vertical */
+}
+
+figure.article-image img {
+  max-width: 100%;             /* S'adapte à la largeur de l'écran */
+  height: auto;                /* Garde les proportions */
+  border: 1px solid #ccc;      /* Bord gris clair */
+  padding: 10px;               /* Espace autour de l'image */
+  border-radius: 8px;          /* Coins arrondis */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Ombre subtile */
+  background-color: #fff;      /* Fond blanc pour les images transparentes */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Effet au survol */
+}
+
+figure.article-image img:hover {
+  transform: scale(1.02);      /* Légère mise en avant au survol */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* Ombre plus visible */
+}
+
+figure.article-image figcaption {
+  font-size: 0.9rem;           /* Texte plus petit */
+  color: #555;                 /* Gris moyen pour légende */
+  margin-top: 8px;             /* Espace avec l'image */
+  font-style: italic;          /* Optionnel : italique pour la légende */
+   }
+   
+
 /* ─── NAVIGATION BAS DE PAGE ─── */
 .article-nav-bottom {
   display: flex;
