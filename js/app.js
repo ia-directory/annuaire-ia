@@ -782,8 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialiser le lightbox galerie
   if (window.GalleryLightbox) {
-    window.GalleryLightbox.injectLightboxCSS();
-    window.GalleryLightbox.createLightbox();
+    window.GalleryLightbox.initLightbox();
   }
 });
 
