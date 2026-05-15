@@ -177,7 +177,7 @@ nav a.nav-cta {
   margin: 36px 0 28px;
 }
 .article-conclusion::before {
-  content: '✅ En résumé — ';
+  content: '';
   font-weight: 600;
 }
 
