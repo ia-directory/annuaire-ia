@@ -3050,3 +3050,137 @@ nav .logo { display: flex; align-items: center; }
   #lb-title { font-size: 13px; }
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   ALBEXIA — Spotlight Notification
+   Coller ce bloc à la fin de style.css
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── PANEL SPOTLIGHT ─── */
+#notif-spotlight {
+  margin-bottom: 28px;
+  padding: 20px;
+  background: rgba(255, 107, 157, 0.05);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  border-radius: 16px;
+  animation: spotlight-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#notif-spotlight.spotlight-hiding {
+  animation: spotlight-out 0.35s ease forwards;
+}
+
+@keyframes spotlight-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spotlight-out {
+  from { opacity: 1; transform: translateY(0); max-height: 400px; }
+  to   { opacity: 0; transform: translateY(-8px); max-height: 0; padding: 0; margin: 0; overflow: hidden; }
+}
+
+/* ─── EN-TÊTE ─── */
+.spotlight-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.spotlight-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ff6b9d;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.spotlight-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff6b9d;
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.25);
+  animation: pulse-dot 2s ease infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.25); }
+  50%       { box-shadow: 0 0 0 6px rgba(255, 107, 157, 0.10); }
+}
+
+.spotlight-close {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.spotlight-close:hover {
+  background: rgba(255, 107, 157, 0.15);
+  border-color: rgba(255, 107, 157, 0.4);
+  color: #ff6b9d;
+}
+
+/* ─── GRILLE CARTES ─── */
+.spotlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* ─── CARTE SPOTLIGHT ─── */
+.spotlight-card {
+  cursor: pointer;
+  border-color: rgba(255, 107, 157, 0.15) !important;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s !important;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 107, 157, 0.15);
+  border-color: rgba(255, 107, 157, 0.35) !important;
+}
+
+/* ─── RESPONSIVE ─── */
+
+/* Tablette : 2 colonnes si 2 ou 3 outils */
+@media (max-width: 768px) {
+  .spotlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Si un seul outil : pleine largeur */
+  .spotlight-grid:has(.spotlight-card:only-child) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile : 1 colonne */
+@media (max-width: 480px) {
+  #notif-spotlight {
+    padding: 14px;
+  }
+
+  .spotlight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
