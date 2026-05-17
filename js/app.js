@@ -295,6 +295,7 @@ async function loadAllData() {
     renderGallery();
     renderFavorites();
     updateFavCount();
+    checkToolsParam();
   } catch (err) {
     console.error('Erreur chargement données:', err);
     showError('tools-grid',   'Impossible de charger les outils.');
@@ -1013,6 +1014,133 @@ window.restartQuiz   = restartQuiz;
 window.copyQuizLink  = copyQuizLink;
 window.shareWhatsApp = shareWhatsApp;
 
+/* ═══════════════════════════════════════════════════════════
+   ALBEXIA — Patch app.js
+   Bloc à coller dans app.js, juste avant la ligne :
+   (function() {
+     const hash = window.location.hash.replace('#', '');
+   ═══════════════════════════════════════════════════════════ */
+
+// ═══════════════════════════════════════
+// SPOTLIGHT — Outils mis en avant via URL
+// ═══════════════════════════════════════
+// Appelé automatiquement depuis loadAllData()
+// URL attendue : index.html?tools=id1,id2,id3
+
+function checkToolsParam() {
+  const params  = new URLSearchParams(window.location.search);
+  const raw     = params.get('tools');
+  if (!raw) return;
+
+  const ids     = raw.split(',').map(s => s.trim()).filter(Boolean);
+  if (!ids.length) return;
+
+  // Chercher les outils dans state.tools
+  const found   = ids
+    .map(id => state.tools.find(t => String(t.id) === id))
+    .filter(Boolean);
+
+  if (!found.length) return;
+
+  renderSpotlight(found);
+}
+
+function renderSpotlight(outils) {
+  // Supprimer un éventuel panel précédent
+  const old = document.getElementById('notif-spotlight');
+  if (old) old.remove();
+
+  const priceLabel = { free: 'Gratuit', freemium: 'Freemium', paid: 'Payant' };
+
+  const cardsHTML = outils.map(t => {
+    const col = catColors[t.category] || { bg: 'rgba(255,255,255,0.08)' };
+    const iconHtml = t.favicon
+      ? `<img src="${t.favicon}" alt="${t.name}" class="tool-favicon"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+             onload="this.nextElementSibling.style.display='none'">
+         <span class="tool-ico-fallback" style="display:none">${t.emoji}</span>`
+      : `<span class="tool-ico-fallback">${t.emoji}</span>`;
+
+    const cardAction = t.page
+      ? `onclick="window.location.href='${t.page}'"`
+      : `onclick="window.open('${t.url}','_blank')"`;
+
+    return `
+      <article class="tool-card spotlight-card" ${cardAction}>
+        <div class="tool-head">
+          <div class="tool-ico" style="background:${col.bg}">${iconHtml}</div>
+          <div style="flex:1">
+            <div class="tool-name">${t.name}</div>
+            <div class="tool-cat">${t.category}</div>
+          </div>
+        </div>
+        <p class="tool-desc">${t.description}</p>
+        <div class="tool-foot">
+          <span class="price-tag price-${t.price}">${priceLabel[t.price]}</span>
+          <span class="stars">${renderStars(t.rating)}</span>
+        </div>
+      </article>`;
+  }).join('');
+
+  const panel = document.createElement('div');
+  panel.id = 'notif-spotlight';
+  panel.innerHTML = `
+    <div class="spotlight-header">
+      <div class="spotlight-label">
+        <span class="spotlight-dot"></span>
+        Outils sélectionnés cette semaine
+      </div>
+      <button class="spotlight-close" onclick="closeSpotlight()" aria-label="Fermer">✕</button>
+    </div>
+    <div class="spotlight-grid">
+      ${cardsHTML}
+    </div>
+  `;
+
+  // Insérer avant le tools-grid (dans la section #tools)
+  const toolsGrid = document.getElementById('tools-grid');
+  if (toolsGrid) {
+    toolsGrid.insertAdjacentElement('beforebegin', panel);
+  }
+
+  // Naviguer vers la section outils automatiquement
+  showPage('tools');
+
+  // Scroll doux vers le panel
+  setTimeout(() => {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function closeSpotlight() {
+  const panel = document.getElementById('notif-spotlight');
+  if (!panel) return;
+  panel.classList.add('spotlight-hiding');
+  setTimeout(() => panel.remove(), 350);
+
+  // Nettoyer l'URL sans recharger la page
+  const url = new URL(window.location.href);
+  url.searchParams.delete('tools');
+  window.history.replaceState({}, '', url.toString());
+}
+
+window.closeSpotlight = closeSpotlight;
+
+/* ─────────────────────────────────────────────
+   MODIFICATION À APPORTER dans loadAllData() :
+   Ajouter checkToolsParam() à la fin du bloc try,
+   après updateFavCount() :
+
+   async function loadAllData() {
+     try {
+       ...
+       updateFavCount();
+       checkToolsParam();   // ← AJOUTER CETTE LIGNE
+     } catch (err) { ... }
+   }
+───────────────────────────────────────────── */
+
+   
 // ── NAVIGATION DEPUIS LES PAGES SECONDAIRES ──
 // Si l'URL contient un hash (#tools, #blog, #gallery)
 // afficher directement la bonne section
