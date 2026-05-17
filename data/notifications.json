@@ -56,15 +56,14 @@
   {
     "id": "notif-007",
     "active": true,
-    "type": "groupe",
-    "delai": 25,
+    "type": "groupe",  
     "outils": [
-      { "nom": "Midjourney", "domaine": "midjourney.com", "tool_id": "1" },
-      { "nom": "Suno AI",    "domaine": "suno.ai",        "tool_id": "2" },
-      { "nom": "Runway",     "domaine": "runwayml.com",   "tool_id": "3" }
+      { "nom": "Midjourney", "domaine": "midjourney.com", "tool_id": "2" },
+      { "nom": "Suno AI",    "domaine": "suno.ai",        "tool_id": "5" },
+      { "nom": "Runway",     "domaine": "runwayml.com",   "tool_id": "7" }
     ],
     "message": "3 outils IA incontournables ajoutés cette semaine.",
-    "lien": "/index.html?tools=1,2,3",
+    "lien": "/index.html?tools=2,5,7",
     "cta": "Voir l'annuaire"
 }
 ]
