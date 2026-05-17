@@ -63,7 +63,7 @@
       { "nom": "Runway",     "domaine": "runwayml.com",   "tool_id": "7" }
     ],
     "message": "3 outils IA incontournables ajoutés cette semaine.",
-    "lien": "/index.html?tools=2,5,7",
+    "lien": "index.html?tools=2,5,7",
     "cta": "Voir l'annuaire"
 }
 ]
