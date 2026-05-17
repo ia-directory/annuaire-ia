@@ -57,13 +57,14 @@
     "id": "notif-007",
     "active": true,
     "type": "groupe",
+    "delai": 25,
     "outils": [
-      { "nom": "ChatGPT",    "domaine": "chat.openai.com" },
-      { "nom": "Perplexity", "domaine": "perplexity.ai"  },
-      { "nom": "Mistral",    "domaine": "mistral.ai"     }
+      { "nom": "Midjourney", "domaine": "midjourney.com", "tool_id": "1" },
+      { "nom": "Suno AI",    "domaine": "suno.ai",        "tool_id": "2" },
+      { "nom": "Runway",     "domaine": "runwayml.com",   "tool_id": "3" }
     ],
     "message": "3 outils IA incontournables ajoutés cette semaine.",
-    "lien": "/outils.html",
+    "lien": "/index.html?tools=1,2,3",
     "cta": "Voir l'annuaire"
-  }
+}
 ]
