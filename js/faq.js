@@ -90,7 +90,7 @@
   }
 
   /* ─── CHARGEMENT DES DONNÉES ─── */
-  fetch('/data/faq.json')
+  fetch('data/faq.json')
     .then(function (res) {
       if (!res.ok) throw new Error('Erreur chargement faq.json : ' + res.status);
       return res.json();
