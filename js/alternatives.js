@@ -16,7 +16,7 @@ const filterMap = {
 };
 
 // ── Chargement des données ──
-fetch('data/alternatives-data.json')
+fetch('../data/alternatives-data.json')
   .then(r => r.json())
   .then(data => {
     DATA = data;
