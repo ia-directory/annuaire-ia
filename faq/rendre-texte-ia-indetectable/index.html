@@ -25,8 +25,8 @@
     }]
   }
   </script>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/faq.css" />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/faq.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
@@ -184,7 +184,23 @@
       <a href="../../tutoriels.html" class="btn-main">Voir les tutoriels</a>
     </div>
   </main>
-  <footer><div style="text-align:center;padding:24px;font-size:13px;color:#4a4a6a;border-top:1px solid rgba(255,255,255,0.07)">&copy; 2025-2026 <a href="../index.html" style="color:#a8a3ff;text-decoration:none">Albexia</a> — <a href="../../ mentions-legales.html" style="color:#7a7a9a;text-decoration:none">Mentions légales</a> · <a href="../politique-confidentialite.html" style="color:#7a7a9a;text-decoration:none">Confidentialité</a> · <a href="../contact.html" style="color:#7a7a9a;text-decoration:none">Contact</a></div></footer>
-  
+  <footer><div style="text-align:center;padding:24px;font-size:13px;color:#4a4a6a;border-top:1px solid rgba(255,255,255,0.07)">&copy; 2025-2026 <a href="../../index.html" style="color:#a8a3ff;text-decoration:none">Albexia</a> — <a href="../../mentions-legales.html" style="color:#7a7a9a;text-decoration:none">Mentions légales</a> · <a href="../politique-confidentialite.html" style="color:#7a7a9a;text-decoration:none">Confidentialité</a> · <a href="../../contact.html" style="color:#7a7a9a;text-decoration:none">Contact</a></div></footer>
+  <script>
+  // Kebab toggle
+  const kebabBtn = document.getElementById('kebab-btn');
+  const kebabMenu = document.getElementById('kebab-menu');
+  if (kebabBtn && kebabMenu) {
+    kebabBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = kebabMenu.classList.toggle('open');
+      kebabBtn.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', () => {
+      kebabMenu.classList.remove('open');
+      kebabBtn.setAttribute('aria-expanded', 'false');
+    });
+    kebabMenu.addEventListener('click', e => e.stopPropagation());
+  }
+        </script>
 </body>
 </html>
