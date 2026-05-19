@@ -3,89 +3,189 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Comment agrandir une image sans perdre en qualité ? — FAQ Albexia</title>
-  <meta name="description" content="Réponse claire et détaillée à la question : Comment agrandir une image sans perdre en qualité ? — FAQ Albexia, l'annuaire IA francophone." />
-
-  <!-- Open Graph -->
-  <meta property="og:title"       content="Comment agrandir une image sans perdre en qualité ? — FAQ Albexia" />
-  <meta property="og:description" content="Réponse claire et détaillée à la question : Comment agrandir une image sans perdre en qualité ? — FAQ Albexia, l'annuaire IA francophone." />
-  <meta property="og:type"        content="article" />
-  <meta property="og:url"         content="https://albexia.com/faq/agrandir-image-sans-perdre-qualite/" />
-  <meta property="og:image"       content="/assets/preview.jpg" />
-
-  <!-- hreflang -->
-  <link rel="alternate" hreflang="fr" href="https://albexia.com/faq/agrandir-image-sans-perdre-qualite/" />
-
-  <!-- Schema.org -->
+  <title>Comment rendre un texte généré par IA indétectable ? — FAQ Albexia</title>
+  <meta name="description" content="Découvrez les techniques pour humaniser un texte généré par IA et passer les détecteurs comme GPTZero ou Turnitin." />
+  <meta property="og:title" content="Comment rendre un texte généré par IA indétectable ? — FAQ Albexia" />
+  <meta property="og:description" content="Découvrez les techniques pour humaniser un texte généré par IA et passer les détecteurs comme GPTZero ou Turnitin." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://albexia.com/faq/rendre-texte-ia-indetectable/" />
+  <meta property="og:image" content="/assets/preview.jpg" />
+  <link rel="alternate" hreflang="fr" href="https://albexia.com/faq/rendre-texte-ia-indetectable/" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [{
       "@type": "Question",
-      "name": "Comment agrandir une image sans perdre en qualité ?",
+      "name": "Comment rendre un texte généré par IA indétectable ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Cette page est en cours de rédaction. Revenez bientôt pour une réponse complète."
+        "text": "Il n'existe pas de méthode infaillible pour rendre un texte IA indétectable à 100%. Réécrire manuellement, ajouter des anecdotes personnelles et varier la syntaxe réduit les scores de détection."
       }
     }]
   }
   </script>
-
-  <link rel="stylesheet" href="/style.css" />
-  <link rel="stylesheet" href="/css/faq.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/faq.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-
   <nav>
-    <a href="/" class="logo">Albexia<span class="dot">.</span></a>
+   <div class="logo">
+      <svg viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg" height="32" aria-label="Albexia">
+  <style>
+    /* Animation de construction pour les polygones */
+    .poly-part {
+      animation: buildIn 1.2s ease-out forwards;
+      opacity: 0;
+    }
+
+    /* Animation d'apparition pour le texte */
+    .logo-text {
+      animation: fadeIn 1s ease-out 0.8s forwards; /* Démarre après 0.8s */
+      opacity: 0;
+    }
+
+    @keyframes buildIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Délais spécifiques pour chaque pièce pour un effet "construction" */
+    .part-1 { animation-delay: 0.1s; }
+    .part-2 { animation-delay: 0.3s; }
+    .part-3 { animation-delay: 0.5s; }
+  </style>
+
+  <polygon class="poly-part part-1" points="2,10 14,32 10,32" fill="#ff6b9d"/>
+  
+  <polygon class="poly-part part-2" points="14,2 18,12 10,12" fill="#ff6b9d" opacity="0.6"/>
+  
+  <polygon class="poly-part part-3" points="26,10 14,32 18,32" fill="#ff6b9d"/>
+
+  <text class="logo-text" x="36" y="26" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#f0f0f5" letter-spacing="-0.5">
+  Albe<tspan fill="#ff6b9d">x</tspan>ia
+</text>
+      </svg>
+   </div>
+     
     <div class="nav-links">
-      <a href="/outils/"  class="nav-link">Outils</a>
-      <a href="/blog/"    class="nav-link">Blog</a>
-      <a href="/galerie/" class="nav-link">Galerie</a>
-      <a href="/faq/"     class="nav-link active">FAQ</a>
+    <button class="nav-link" onclick="window.location.href='index.html'">Accueil</button>
+    <button class="nav-link" onclick="window.location.href='index.html#tools'">Outils</button>
+    <button class="nav-link" onclick="window.location.href='index.html#blog'">Blog</button>
     </div>
-  </nav>
 
-  <main class="container">
+  <!-- ═══════════════════════════════════════════════════
+     NOUVEAU MENU KEBAB — Albexia
+     Remplace l'ancien kebab-wrap dans toutes les pages.
+     Top 3 des incontournables + lien vers le Hub complet.
+     ═══════════════════════════════════════════════════ -->
 
-    <nav class="breadcrumb" aria-label="Fil d'Ariane">
-      <a href="/">Accueil</a>
-      <span class="breadcrumb-sep">›</span>
-      <a href="/faq/">FAQ</a>
-      <span class="breadcrumb-sep">›</span>
-      <span class="breadcrumb-current">Comment agrandir une image sans perdre en qualité ?</span>
-    </nav>
+<div class="kebab-wrap" id="kebab-wrap">
+  <button class="kebab-btn" id="kebab-btn" aria-label="Plus de pages" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 
+  <div class="kebab-menu" id="kebab-menu" role="menu">
+
+    <!-- Top 3 des pages incontournables -->
+    <div class="kebab-label">Incontournables</div>
+
+    <a href="glossaire.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">📖</span>
+      <div>
+        <div class="kebab-item-name">Glossaire IA</div>
+        <div class="kebab-item-sub">Tous les termes en français</div>
+      </div>
+    </a>
+
+    <a href="comparateur.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">⚖️</span>
+      <div>
+        <div class="kebab-item-name">Comparateur</div>
+        <div class="kebab-item-sub">Comparer les outils côte à côte</div>
+      </div>
+    </a>
+
+    <a href="pages/deals.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">🔥</span>
+      <div>
+        <div class="kebab-item-name">Deals &amp; Promos</div>
+        <div class="kebab-item-sub">Essais gratuits · Offres exclusives</div>
+      </div>
+    </a>
+
+    <!-- Séparateur -->
+    <div class="kebab-divider"></div>
+
+    <!-- Lien Hub complet -->
+    <a href="hub.html" class="kebab-item kebab-hub-link" role="menuitem">
+      <span class="kebab-ico">📂</span>
+      <div>
+        <div class="kebab-item-name">Voir toutes les sections</div>
+        <div class="kebab-item-sub">Carte complète d'Albexia →</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+</nav>
+  
     <header class="faq-page-header">
-      <h1>Comment agrandir une image sans perdre en qualité ?</h1>
+      <h1>Comment rendre un texte généré par IA indétectable ?</h1>
     </header>
-
     <div class="faq-answer-box" role="note" aria-label="Réponse rapide">
       <div class="faq-answer-label">Réponse rapide</div>
-      <p><strong>Cette page est en cours de rédaction.</strong> Revenez bientôt pour une réponse complète à cette question sur génération d'images & design.</p>
+      <p><strong>Il n'existe pas de méthode infaillible</strong> pour rendre un texte IA indétectable à 100%. Cependant, réécrire le texte à la main, ajouter des anecdotes personnelles et varier la structure syntaxique réduit significativement les scores de détection.</p>
     </div>
-
     <article class="faq-content">
-      <h2>Pourquoi cette question est importante</h2>
-      <p>La question « Comment agrandir une image sans perdre en qualité ? » revient fréquemment parmi les utilisateurs francophones d'outils IA. Nous préparons une réponse approfondie avec des exemples concrets et des comparatifs.</p>
+
+      <h2>Pourquoi les détecteurs reconnaissent le texte IA ?</h2>
+      <p>Les textes générés par IA tendent à être trop réguliers : phrases de longueur similaire, vocabulaire prévisible, structure répétitive. Les détecteurs comme GPTZero analysent la « perplexité » et la « burstiness » — deux métriques qui mesurent l'imprévisibilité du texte.</p>
+      <h2>Techniques pour humaniser un texte IA</h2>
+      <ul><li><strong>Réécriture manuelle :</strong> modifiez au moins 30% du texte vous-même.</li><li><strong>Anecdotes personnelles :</strong> ajoutez des expériences que l'IA ne peut pas inventer.</li><li><strong>Variez la longueur des phrases :</strong> alternez phrases courtes et longues.</li><li><strong>Ajoutez des imperfections naturelles :</strong> hésitations, reformulations, opinions tranchées.</li><li><strong>Outils de réécriture :</strong> Quillbot, Undetectable.ai — utiles mais pas parfaits.</li></ul>
+      <h2>La question éthique</h2>
+      <p>Dans un contexte académique, soumettre un texte IA comme son propre travail est considéré comme du plagiat dans la plupart des institutions. Dans un contexte professionnel ou éditorial, vérifiez la politique de votre employeur ou publication avant d'utiliser du contenu IA.</p>
     </article>
 
+    <nav class="faq-related" aria-label="Questions liées">
+      <p class="faq-related-title">Questions liées</p>
+      <ul class="faq-related-list">
+        <li><a href="faq/google-penalise-contenu-ia/index.html">Google pénalise-t-il le contenu IA ?</a></li>
+        <li><a href="faq/rediger-fiches-produits-ia/index.html">Rédiger des fiches produits avec l'IA</a></li>
+        <li><a href="faq/cest-quoi-un-prompt/index.html">C'est quoi un prompt ?</a></li>
+        <li><a href="faq/quelle-ia-pour-coder/index.html">Quelle IA pour coder ?</a></li>
+      </ul>
+    </nav>
     <div class="faq-cta-block">
       <div class="faq-cta-text">
-        <h3>Explorez nos outils IA</h3>
-        <p>Catalogue francophone classé par catégorie et usage.</p>
+        <h3>Voir les tutoriels IA</h3>
+        <p>Guides pratiques pour maîtriser les outils IA.</p>
       </div>
-      <a href="/outils/" class="btn-main">Voir le catalogue</a>
+      <a href="tutoriels.html" class="btn-main">Voir les tutoriels</a>
     </div>
-
   </main>
-
   <footer>
-    <p>© 2025 Albexia · <a href="/mentions-legales.html">Mentions légales</a> · <a href="/confidentialite.html">Confidentialité</a></p>
+    <p>© 2025 Albexia · <a href="../../mentions-legales.html">Mentions légales</a> · <a href="../../politique-confidentialite.html">Confidentialité</a></p>
   </footer>
-
 </body>
 </html>
