@@ -26,7 +26,7 @@
 
   function buildURL(id) {
     /* Adapter si l'arborescence change */
-    return `/faq/${id}/`;
+    return `faq/${id}/`;
   }
 
   /* ─── RENDU ─── */
