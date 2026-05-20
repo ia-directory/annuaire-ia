@@ -13,13 +13,13 @@
         "description": "Analyse complète de Claude 3.5, Gemini Pro et DeepSeek-V3. Performance logique équivalente à 98% pour $0/mois.",
         "economie": "$240/an",
         "metrique": "98% de parité technique pour $0/mois",
-        "url": "articles/alternative-gratuite-chatgpt.html"
+        "url": "../articles/alternative-gratuite-chatgpt.html"
       },
       "alternatives": [
-        { "outil": "Claude AI", "description": "Maîtriser le code et la rédaction sans limites de messages", "tag": "Open-Source dispos", "url": "alternatives/claude-ai.html" },
-        { "outil": "Notion AI", "description": "Centraliser vos bases de connaissances à coût zéro", "tag": "100% Gratuit", "url": "alternatives/notion-ai.html" },
-        { "outil": "Perplexity AI", "description": "Les moteurs de recherche IA en temps réel pour l'analyse de données", "tag": "Freemium", "url": "alternatives/perplexity-ai.html" },
-        { "outil": "Jasper AI", "description": "Automatiser votre copywriting et votre SEO sans abonnement SaaS", "tag": "API Hacks", "url": "alternatives/jasper-ai.html" }
+        { "outil": "Claude AI", "description": "Maîtriser le code et la rédaction sans limites de messages", "tag": "Open-Source dispos", "url": "../alternatives/claude-ai.html" },
+        { "outil": "Notion AI", "description": "Centraliser vos bases de connaissances à coût zéro", "tag": "100% Gratuit", "url": "../alternatives/notion-ai.html" },
+        { "outil": "Perplexity AI", "description": "Les moteurs de recherche IA en temps réel pour l'analyse de données", "tag": "Freemium", "url": "../alternatives/perplexity-ai.html" },
+        { "outil": "Jasper AI", "description": "Automatiser votre copywriting et votre SEO sans abonnement SaaS", "tag": "API Hacks", "url": "../alternatives/jasper-ai.html" }
       ]
     },
     {
@@ -35,13 +35,13 @@
         "description": "Le protocole pour installer et faire tourner Flux.1 sur votre machine. Génération de texte parfaite, rendu équivalent à Midjourney v6.",
         "economie": "$360/an",
         "metrique": "Rendu v6 équivalent, zéro censure, zéro abonnement",
-        "url": "articles/alternative-gratuite-midjourney.html"
+        "url": "../articles/alternative-gratuite-midjourney.html"
       },
       "alternatives": [
-        { "outil": "Canva AI", "description": "Génération de bannières et de designs marketing automatisés", "tag": "Économie : $15/mois", "url": "alternatives/canva-ai.html" },
-        { "outil": "Photoshop GenFill", "description": "Édition d'image et détourage IA sans passer par Adobe", "tag": "Web Tools", "url": "alternatives/photoshop-genfill.html" },
-        { "outil": "DALL-E 3", "description": "Générateurs d'images par invites (prompts) ultra-précis", "tag": "Accès Libres", "url": "alternatives/dalle-3.html" },
-        { "outil": "Stable Diffusion", "description": "Les meilleures interfaces cloud gratuites pour générer à l'infini", "tag": "No-Code", "url": "alternatives/stable-diffusion.html" }
+        { "outil": "Canva AI", "description": "Génération de bannières et de designs marketing automatisés", "tag": "Économie : $15/mois", "url": "../alternatives/canva-ai.html" },
+        { "outil": "Photoshop GenFill", "description": "Édition d'image et détourage IA sans passer par Adobe", "tag": "Web Tools", "url": "../alternatives/photoshop-genfill.html" },
+        { "outil": "DALL-E 3", "description": "Générateurs d'images par invites (prompts) ultra-précis", "tag": "Accès Libres", "url": "../alternatives/dalle-3.html" },
+        { "outil": "Stable Diffusion", "description": "Les meilleures interfaces cloud gratuites pour générer à l'infini", "tag": "No-Code", "url": "../alternatives/stable-diffusion.html" }
       ]
     },
     {
@@ -57,13 +57,13 @@
         "description": "Les nouveaux modèles vidéo qui font tomber les barrières du coût. Génération de scènes complexes de 10s en moins de 30 secondes.",
         "economie": "$420/an",
         "metrique": "Scènes complexes de 10s générées en moins de 30 secondes",
-        "url": "articles/alternative-gratuite-runway.html"
+        "url": "../articles/alternative-gratuite-runway.html"
       },
       "alternatives": [
-        { "outil": "HeyGen", "description": "Créer des avatars vidéo parlants ultra-réalistes", "tag": "Pour Créateurs", "url": "alternatives/heygen.html" },
-        { "outil": "ElevenLabs", "description": "Clonage de voix et voix-off professionnelles pour quelques centimes", "tag": "Pay-As-You-Go", "url": "alternatives/elevenlabs.html" },
-        { "outil": "Suno", "description": "Générer des pistes audio et compositions musicales libres de droits", "tag": "Gratuit", "url": "alternatives/suno.html" },
-        { "outil": "Klap", "description": "Diviser des vidéos longues en Shorts/TikToks via IA autonome", "tag": "Growth Hacks", "url": "alternatives/klap.html" }
+        { "outil": "HeyGen", "description": "Créer des avatars vidéo parlants ultra-réalistes", "tag": "Pour Créateurs", "url": "../alternatives/heygen.html" },
+        { "outil": "ElevenLabs", "description": "Clonage de voix et voix-off professionnelles pour quelques centimes", "tag": "Pay-As-You-Go", "url": "../alternatives/elevenlabs.html" },
+        { "outil": "Suno", "description": "Générer des pistes audio et compositions musicales libres de droits", "tag": "Gratuit", "url": "../alternatives/suno.html" },
+        { "outil": "Klap", "description": "Diviser des vidéos longues en Shorts/TikToks via IA autonome", "tag": "Growth Hacks", "url": "../alternatives/klap.html" }
       ]
     },
     {
@@ -79,11 +79,11 @@
         "description": "Pourquoi la communauté de développeurs migre massivement sur Cursor et Bolt. Vitesse d'exécution augmentée de 40%, indexation locale complète de votre codebase.",
         "economie": "$120/an",
         "metrique": "Vitesse d'exécution +40%, indexation locale complète",
-        "url": "articles/alternative-gratuite-github-copilot.html"
+        "url": "../articles/alternative-gratuite-github-copilot.html"
       },
       "alternatives": [
-        { "outil": "Bolt", "description": "Générer des apps web complètes (HTML/CSS/React) via prompt", "tag": "🔥 Tendance", "url": "alternatives/bolt.html" },
-        { "outil": "Make", "description": "Connecter et automatiser vos outils business sans payer de quotas", "tag": "Self-Hosted", "url": "alternatives/make.html" }
+        { "outil": "Bolt", "description": "Générer des apps web complètes (HTML/CSS/React) via prompt", "tag": "🔥 Tendance", "url": "../alternatives/bolt.html" },
+        { "outil": "Make", "description": "Connecter et automatiser vos outils business sans payer de quotas", "tag": "Self-Hosted", "url": "../alternatives/make.html" }
       ]
     }
   ],
