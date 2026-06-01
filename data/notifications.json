@@ -26,7 +26,7 @@
       "domaine": "claude.ai"
     },
     "message": "Claude 3.5 Sonnet est disponible sur Albexia — découvre sa fiche complète.",
-    "lien": "/outils/claude.html",
+    "lien": "https://ia-directory.github.io/annuaire-ia/tools/featured/claude.html",
     "cta": "Voir la fiche"
   },
   {
@@ -38,7 +38,7 @@
       "domaine": "midjourney.com"
     },
     "message": "Midjourney génère des images époustouflantes — voir la fiche complète.",
-    "lien": "/outils/midjourney.html",
+    "lien": "https://ia-directory.github.io/annuaire-ia/tools/featured/midjourney.html",
     "cta": "Voir la fiche"
   },
   {
@@ -50,7 +50,7 @@
       "domaine": "canva.com"
     },
     "message": "Canva Pro : crée des visuels professionnels avec l'IA intégrée.",
-    "lien": "/outils/canva.html",
+    "lien": "https://ia-directory.github.io/annuaire-ia/tools/featured/canva.html",
     "cta": "Découvrir"
   },
   {
@@ -65,5 +65,17 @@
     "message": "3 outils IA incontournables ajoutés cette semaine.",
     "lien": "index.html?tools=2,5,7",
     "cta": "Voir l'annuaire"
-}
-]
+},
+ {
+    "id": "notif-008",
+    "active": true,
+    "type": "lien",
+    "tool": {
+      "nom": "ChatGPT",
+      "domaine": "chatgpt.com"
+    },
+    "message": "Découvre les performances de GPT-5 sur Albexia — explore sa fiche complète et ses cas d'usage.",
+    "lien": "https://ia-directory.github.io/annuaire-ia/tools/featured/chatgpt.html",
+    "cta": "Voir la fiche"
+    }
+ ]
