@@ -7,6 +7,8 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='16,2 28,30 4,30' fill='none' stroke='%23ff6b9d' stroke-width='2.5' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%23ff6b9d'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/style.css" />
+  
   <style>
     :root{--bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--border:rgba(255,255,255,0.07);--border-hover:rgba(255,255,255,0.15);--text:#f0f0f5;--text-muted:#7a7a9a;--text-dim:#4a4a6a;--accent:#6c63ff;--accent2:#ff6b9d;--accent3:#00d4aa;--accent-amber:#f5a623}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -181,22 +183,32 @@
 <body>
 
   <nav>
-    <a href="../../index.html" class="logo">Albe<span class="dot">x</span>ia</a>
-    <div class="nav-links">
-      <a class="nav-link" href="../../index.html">Accueil</a>
-      <a class="nav-link" href="../../index.html">Outils</a>
-      <a class="nav-link" href="../../blog/index.html">Blog</a>
-    </div>
-    <a class="nav-cta" href="../../index.html">← Retour</a>
-  </nav>
-
-  <div class="tool-breadcrumb">
-    <div class="container">
-      <a href="../../index.html">Albexia</a><span>›</span>
-      <a href="../../index.html">Outils IA</a><span>›</span>
-      <span>ChatGPT</span>
+  <div class="logo">
+    <svg viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg" height="32" aria-label="Albexia">
+      <style>.poly-part{animation:buildIn 1.2s ease-out forwards;opacity:0}.logo-text{animation:fadeIn 1s ease-out 0.8s forwards;opacity:0}@keyframes buildIn{0%{opacity:0;transform:translateY(10px) scale(.8)}100%{opacity:1;transform:translateY(0) scale(1)}}@keyframes fadeIn{0%{opacity:0;transform:translateX(-5px)}100%{opacity:1;transform:translateX(0)}}.part-1{animation-delay:.1s}.part-2{animation-delay:.3s}.part-3{animation-delay:.5s}</style>
+      <polygon class="poly-part part-1" points="2,10 14,32 10,32" fill="#ff6b9d"/>
+      <polygon class="poly-part part-2" points="14,2 18,12 10,12" fill="#ff6b9d" opacity="0.6"/>
+      <polygon class="poly-part part-3" points="26,10 14,32 18,32" fill="#ff6b9d"/>
+      <text class="logo-text" x="36" y="26" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#f0f0f5" letter-spacing="-0.5">Albe<tspan fill="#ff6b9d">x</tspan>ia</text>
+    </svg>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="window.location.href='../../index.html'">Accueil</button>
+    <button class="nav-link" onclick="window.location.href='../../index.html#tools'">Outils</button>
+    <button class="nav-link" onclick="window.location.href='../../index.html#blog'">Blog</button>
+  </div>
+  <div class="kebab-wrap" id="kebab-wrap">
+    <button class="kebab-btn" id="kebab-btn" aria-label="Plus de pages" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="kebab-menu" id="kebab-menu" role="menu">
+      <div class="kebab-label">Incontournables</div>
+      <a href="../../glossaire.html" class="kebab-item" role="menuitem"><span class="kebab-ico">📖</span><div><div class="kebab-item-name">Glossaire IA</div><div class="kebab-item-sub">Tous les termes en français</div></div></a>
+      <a href="../comparateur.html" class="kebab-item" role="menuitem"><span class="kebab-ico">⚖️</span><div><div class="kebab-item-name">Comparateur</div><div class="kebab-item-sub">Comparer les outils côte à côte</div></div></a>
+      <a href="../../pages/deals.html" class="kebab-item" role="menuitem"><span class="kebab-ico">🔥</span><div><div class="kebab-item-name">Deals &amp; Promos</div><div class="kebab-item-sub">Essais gratuits · Offres exclusives</div></div></a>
+      <div class="kebab-divider"></div>
+      <a href="../../hub.html" class="kebab-item kebab-hub-link" role="menuitem"><span class="kebab-ico">📂</span><div><div class="kebab-item-name">Voir toutes les sections</div><div class="kebab-item-sub">Carte complète d'Albexia →</div></div></a>
     </div>
   </div>
+</nav>
 
   <main><div class="container">
 
@@ -250,7 +262,7 @@
         <section class="tool-section">
           <h2>Interface de l'outil</h2>
           <div class="screenshot-wrap">
-            <img src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=900&q=80" alt="Interface ChatGPT">
+            <img src="https://share.google/vhxcDEQbZAjYOpudN" alt="Interface ChatGPT">
             <div class="screenshot-label">Interface ChatGPT — Version web 2026</div>
           </div>
         </section>
@@ -517,7 +529,15 @@
 
   </div></main>
 
-  <footer>© 2025-2026 <a href="../../index.html">Albexia</a> · <a href="#" style="color:var(--text-dim)">Mentions légales</a> · <a href="#" style="color:var(--text-dim)">Confidentialité</a></footer>
+  <footer>
+  <div style="text-align:center;padding:24px;font-size:13px;color:#4a4a6a;border-top:1px solid rgba(255,255,255,0.07)">
+    &copy; 2025-2026 <a href="../../index.html" style="color:#a8a3ff;text-decoration:none">Albexia</a> —
+    <a href="../../mentions-legales.html" style="color:#7a7a9a;text-decoration:none">Mentions légales</a> ·
+    <a href="../../politique-confidentialite.html" style="color:#7a7a9a;text-decoration:none">Confidentialité</a> ·
+    <a href="../../contact.html" style="color:#7a7a9a;text-decoration:none">Contact</a>
+  </div>
+</footer>
+
 
   <script src="../../js/articles-loader.js" data-outil="chatgpt" data-plan="featured"></script>
   <script>
@@ -533,6 +553,10 @@
       if (isOpen) { item.classList.remove('open'); const iframe = item.querySelector('iframe'); if (iframe) iframe.src = ''; }
       else { item.classList.add('open'); const iframe = item.querySelector('iframe[data-src]'); if (iframe && !iframe.src) iframe.src = iframe.dataset.src; }
     }
+
+    const kb=document.getElementById('kebab-btn'),km=document.getElementById('kebab-menu');
+if(kb&&km){kb.addEventListener('click',e=>{e.stopPropagation();const o=km.classList.toggle('open');kb.setAttribute('aria-expanded',o)});document.addEventListener('click',()=>{km.classList.remove('open');kb.setAttribute('aria-expanded','false')});km.addEventListener('click',e=>e.stopPropagation())}
+    
   </script>
 </body>
 </html>
