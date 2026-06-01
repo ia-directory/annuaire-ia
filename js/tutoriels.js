@@ -251,9 +251,24 @@ function bindSoumissionGlobal() {
   /* Formulaire */
   document.getElementById('form-soumission')?.addEventListener('submit', e => {
     e.preventDefault();
-    const btn = document.getElementById('soumission-submit');
-    if (btn) { btn.textContent = 'Envoyé ✓'; btn.disabled = true; btn.classList.add('success'); }
-    setTimeout(() => { fermerModalSoumission(); if (btn) { btn.textContent = 'Soumettre la vidéo'; btn.disabled = false; btn.classList.remove('success'); } }, 2000);
+    const btn  = document.getElementById('soumission-submit');
+    const form = document.getElementById('form-soumission');
+    if (btn) { btn.textContent = 'Envoi…'; btn.disabled = true; }
+
+    fetch('https://formspree.io/f/xvzyjkaa', {
+      method:  'POST',
+      body:    new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(() => {
+      if (btn) { btn.textContent = 'Envoyé ✓'; btn.classList.add('success'); }
+      setTimeout(() => {
+        fermerModalSoumission();
+        if (btn) { btn.textContent = 'Soumettre la vidéo →'; btn.disabled = false; btn.classList.remove('success'); }
+        form.reset();
+      }, 2000);
+    }).catch(() => {
+      if (btn) { btn.textContent = 'Erreur — Réessayez'; btn.disabled = false; }
+    });
   });
 }
 

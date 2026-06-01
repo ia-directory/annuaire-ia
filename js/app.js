@@ -244,28 +244,40 @@ function handleSubmit() {
   }
   errEl.style.display = 'none';
 
-  const submission = {
-    name:        document.getElementById('f-name').value.trim(),
-    url:         document.getElementById('f-url').value.trim(),
-    category:    document.getElementById('f-cat').value,
-    price:       document.getElementById('f-price').value,
-    description: document.getElementById('f-desc').value.trim(),
-    emoji:       document.getElementById('f-emoji').value.trim() || '🤖',
-    email:       document.getElementById('f-email').value.trim(),
-    submittedAt: new Date().toISOString(),
-  };
+  const nomOutil = document.getElementById('f-name').value.trim();
 
-  console.log('Soumission reçue :', submission);
+  const formData = new FormData();
+  formData.append('nom_outil',    nomOutil);
+  formData.append('url',          document.getElementById('f-url').value.trim());
+  formData.append('categorie',    document.getElementById('f-cat').value);
+  formData.append('tarification', document.getElementById('f-price').value);
+  formData.append('description',  document.getElementById('f-desc').value.trim());
+  formData.append('emoji',        document.getElementById('f-emoji').value.trim() || '🤖');
+  formData.append('email',        document.getElementById('f-email').value.trim());
 
-  document.querySelector('.modal-body').innerHTML = `
-    <div class="form-success">
-      <div class="success-icon">✅</div>
-      <h4>Soumission envoyée !</h4>
-      <p>Merci pour votre contribution. L'outil <strong>${submission.name}</strong>
-      sera examiné par notre équipe et ajouté sous 48h si approuvé.</p>
-    </div>`;
-  document.querySelector('.modal-footer').innerHTML = `
-    <button class="btn-main" onclick="closeModal()">Fermer</button>`;
+  // Désactiver le bouton pendant l'envoi
+  const submitBtn = document.querySelector('.modal-footer .btn-main');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Envoi…'; }
+
+  fetch('https://formspree.io/f/xaqkgqlr', {
+    method:  'POST',
+    body:    formData,
+    headers: { 'Accept': 'application/json' }
+  }).then(() => {
+    document.querySelector('.modal-body').innerHTML = `
+      <div class="form-success">
+        <div class="success-icon">✅</div>
+        <h4>Soumission envoyée !</h4>
+        <p>Merci pour votre contribution. L'outil <strong>${nomOutil}</strong>
+        sera examiné par notre équipe et ajouté sous 48h si approuvé.</p>
+      </div>`;
+    document.querySelector('.modal-footer').innerHTML =
+      `<button class="btn-main" onclick="closeModal()">Fermer</button>`;
+  }).catch(() => {
+    errEl.textContent = 'Erreur réseau. Réessayez dans quelques instants.';
+    errEl.style.display = 'block';
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Soumettre'; }
+  });
 }
 
 // ═══════════════════════════════════════
