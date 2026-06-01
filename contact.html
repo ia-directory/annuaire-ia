@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact — AnnuaireIA</title>
-  <meta name="description" content="Contactez l'équipe AnnuaireIA pour toute question, partenariat ou signalement.">
+  <title>Contact — Albexia</title>
+  <meta name="description" content="Contactez l'équipe Albexia pour toute question, partenariat ou signalement.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -101,14 +101,126 @@
 </head>
 <body>
 
-  <nav>
-    <div class="logo"><a href="index.html" style="text-decoration:none;color:inherit">Annuaire<span class="dot">IA</span></a></div>
+  <!-- NAV -->
+<nav>
+   <div class="logo">
+      <svg viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg" height="32" aria-label="Albexia">
+  <style>
+    /* Animation de construction pour les polygones */
+    .poly-part {
+      animation: buildIn 1.2s ease-out forwards;
+      opacity: 0;
+    }
+
+    /* Animation d'apparition pour le texte */
+    .logo-text {
+      animation: fadeIn 1s ease-out 0.8s forwards; /* Démarre après 0.8s */
+      opacity: 0;
+    }
+
+    @keyframes buildIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Délais spécifiques pour chaque pièce pour un effet "construction" */
+    .part-1 { animation-delay: 0.1s; }
+    .part-2 { animation-delay: 0.3s; }
+    .part-3 { animation-delay: 0.5s; }
+  </style>
+
+  <polygon class="poly-part part-1" points="2,10 14,32 10,32" fill="#ff6b9d"/>
+  
+  <polygon class="poly-part part-2" points="14,2 18,12 10,12" fill="#ff6b9d" opacity="0.6"/>
+  
+  <polygon class="poly-part part-3" points="26,10 14,32 18,32" fill="#ff6b9d"/>
+
+  <text class="logo-text" x="36" y="26" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#f0f0f5" letter-spacing="-0.5">
+  Albe<tspan fill="#ff6b9d">x</tspan>ia
+</text>
+      </svg>
+   </div>
+     
     <div class="nav-links">
-      <a class="nav-link" href="index.html">Accueil</a>
-      <a class="nav-link" href="index.html">Blog</a>
+    <button class="nav-link" onclick="window.location.href='../index.html'">Accueil</button>
+    <button class="nav-link" onclick="window.location.href='../index.html#tools'">Outils</button>
+    <button class="nav-link" onclick="window.location.href='../index.html#blog'">Blog</button>
     </div>
-    <a class="nav-cta" href="index.html">← Retour</a>
-  </nav>
+
+  <!-- ═══════════════════════════════════════════════════
+     NOUVEAU MENU KEBAB — Albexia
+     Remplace l'ancien kebab-wrap dans toutes les pages.
+     Top 3 des incontournables + lien vers le Hub complet.
+     ═══════════════════════════════════════════════════ -->
+
+<div class="kebab-wrap" id="kebab-wrap">
+  <button class="kebab-btn" id="kebab-btn" aria-label="Plus de pages" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="kebab-menu" id="kebab-menu" role="menu">
+
+    <!-- Top 3 des pages incontournables -->
+    <div class="kebab-label">Incontournables</div>
+
+    <a href="glossaire.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">📖</span>
+      <div>
+        <div class="kebab-item-name">Glossaire IA</div>
+        <div class="kebab-item-sub">Tous les termes en français</div>
+      </div>
+    </a>
+
+    <a href="comparateur.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">⚖️</span>
+      <div>
+        <div class="kebab-item-name">Comparateur</div>
+        <div class="kebab-item-sub">Comparer les outils côte à côte</div>
+      </div>
+    </a>
+
+    <a href="pages/deals.html" class="kebab-item" role="menuitem">
+      <span class="kebab-ico">🔥</span>
+      <div>
+        <div class="kebab-item-name">Deals &amp; Promos</div>
+        <div class="kebab-item-sub">Essais gratuits · Offres exclusives</div>
+      </div>
+    </a>
+
+    <!-- Séparateur -->
+    <div class="kebab-divider"></div>
+
+    <!-- Lien Hub complet -->
+    <a href="hub.html" class="kebab-item kebab-hub-link" role="menuitem">
+      <span class="kebab-ico">📂</span>
+      <div>
+        <div class="kebab-item-name">Voir toutes les sections</div>
+        <div class="kebab-item-sub">Carte complète d'Albexia →</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+</nav>
+
 
   <main class="article-main">
     <div class="article-container">
@@ -123,17 +235,17 @@
 
       <!-- Cartes de contact rapide -->
       <div class="contact-grid">
-        <a href="mailto:contact@annuaireia.com" class="contact-card">
+        <a href="mailto:albexia.hello@gmail.com" class="contact-card">
           <div class="contact-card-icon">✉️</div>
           <div class="contact-card-title">Contact général</div>
           <div class="contact-card-desc">Questions, suggestions, signalements</div>
-          <div class="contact-card-email">contact@annuaireia.com</div>
+          <div class="contact-card-email">albexia.hello@gmail.com</div>
         </a>
-        <a href="mailto:partenariats@annuaireia.com" class="contact-card">
+        <a href="mailto:albexia.hello@gmail.com" class="contact-card">
           <div class="contact-card-icon">🤝</div>
           <div class="contact-card-title">Partenariats</div>
           <div class="contact-card-desc">Collaboration, référencement d'outils</div>
-          <div class="contact-card-email">partenariats@annuaireia.com</div>
+          <div class="contact-card-email">albexia.hello@gmail.com</div>
         </a>
       </div>
 
@@ -142,8 +254,8 @@
         <div class="contact-form-title">Envoyer un message</div>
         <p class="contact-form-sub">Remplissez ce formulaire et nous vous répondrons dans les 48h.</p>
 
-        <form id="contact-form" action="https://formspree.io/f/VOTRE_ID_FORMSPREE" method="POST">
-          <input type="hidden" name="_subject" value="Nouveau message depuis AnnuaireIA">
+        <form id="contact-form" action="https://formspree.io/f/mpqngkwe" method="POST">
+          <input type="hidden" name="_subject" value="Nouveau message depuis Albexia">
 
           <div class="form-grid">
             <div class="form-row">
@@ -192,7 +304,7 @@
 
   <footer>
     <div style="text-align:center;padding:24px;font-size:13px;color:#4a4a6a;border-top:1px solid rgba(255,255,255,0.07)">
-      &copy; 2025-2026 <a href="index.html" style="color:#a8a3ff;text-decoration:none">AnnuaireIA</a> —
+      &copy; 2025-2026 <a href="index.html" style="color:#a8a3ff;text-decoration:none">Albexia</a> —
       <a href="mentions-legales.html" style="color:#7a7a9a;text-decoration:none">Mentions légales</a> ·
       <a href="politique-confidentialite.html" style="color:#7a7a9a;text-decoration:none">Confidentialité</a> ·
       <a href="contact.html" style="color:#7a7a9a;text-decoration:none">Contact</a>
@@ -226,6 +338,10 @@
         btn.disabled = false;
       }
     });
+  
+const kb=document.getElementById('kebab-btn'),km=document.getElementById('kebab-menu');
+if(kb&&km){kb.addEventListener('click',e=>{e.stopPropagation();const o=km.classList.toggle('open');kb.setAttribute('aria-expanded',o)});document.addEventListener('click',()=>{km.classList.remove('open');kb.setAttribute('aria-expanded','false')});km.addEventListener('click',e=>e.stopPropagation())}
+
   </script>
 
 </body>
