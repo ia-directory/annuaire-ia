@@ -286,9 +286,10 @@ function handleForm(e, form, slug) {
     if (s) s.style.display = 'block';
   }).catch(() => {
     if (btn) { btn.disabled = false; btn.textContent = 'Envoyer →'; }
-    alert('Erreur lors de l'envoi. Veuillez réessayer.');
+    alert('Erreur lors de l\'envoi. Veuillez réessayer.');
   });
 }
+
 
 // ── NEWSLETTER ──
 function handleNewsletter(e) {
