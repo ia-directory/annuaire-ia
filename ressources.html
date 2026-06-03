@@ -12,6 +12,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init("YtPmVpL1UI05DwKSm");</script>
 </head>
 <body>
 
@@ -223,8 +225,7 @@ function carteEmailHTML(r) {
     </button>
     <div class="ressource-form">
       <div class="ressource-form-label">${r.form_label}</div>
-      <form action="https://formspree.io/f/${r.formspree_id}" method="POST"
-            onsubmit="handleForm(event, this, '${slug}')">
+      <form onsubmit="handleForm(event, this, '${slug}')" data-template="${r.emailjs_template}">
         <input type="hidden" name="ressource" value="${r.titre}">
         <div class="ressource-form-row">
           <input type="email" name="email" class="ressource-email-input"
@@ -271,18 +272,21 @@ function toggleForm(btn) {
 // ── SUBMIT FORMULAIRE ──
 function handleForm(e, form, slug) {
   e.preventDefault();
-  fetch(form.action, {
-    method: 'POST', body: new FormData(form),
-    headers: { 'Accept': 'application/json' }
+  const emailInput = form.querySelector('input[type="email"]');
+  const templateId = form.dataset.template;
+  const btn = form.querySelector('button[type="submit"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Envoi...'; }
+
+  emailjs.send('service_whq081e', templateId, {
+    to_email: emailInput.value.trim()
   }).then(() => {
     form.style.display = 'none';
     form.previousElementSibling.style.display = 'none';
     const s = document.getElementById('success-' + slug);
     if (s) s.style.display = 'block';
   }).catch(() => {
-    const s = document.getElementById('success-' + slug);
-    if (s) s.style.display = 'block';
-    form.style.display = 'none';
+    if (btn) { btn.disabled = false; btn.textContent = 'Envoyer →'; }
+    alert('Erreur lors de l'envoi. Veuillez réessayer.');
   });
 }
 

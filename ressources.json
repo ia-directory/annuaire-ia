@@ -12,7 +12,8 @@
     "formspree_id": null,
     "form_label": null,
     "success_msg": null,
-    "vitrine": false
+    "vitrine": false,
+    "emailjs_template": null
   },
   {
     "id": 2,
@@ -24,10 +25,11 @@
     "pages": 2,
     "niveau": "Débutant",
     "fichier": "ressources/albexia-checklist-outil-ia.pdf",
-    "formspree_id": "VOTRE_ID_FORMSPREE",
+    "formspree_id": null,
     "form_label": "Votre email pour recevoir la checklist :",
     "success_msg": "✓ Vérifiez votre boîte mail — le PDF est en route !",
-    "vitrine": false
+    "vitrine": false,
+    "emailjs_template": "template_zpu6dsd"
   },
   {
     "id": 3,
@@ -39,10 +41,11 @@
     "pages": 2,
     "niveau": "Débutant",
     "fichier": "ressources/albexia-guide-outils-gratuits.pdf",
-    "formspree_id": "xlgvygaq",
+    "formspree_id": null,
     "form_label": "Votre email pour recevoir le guide :",
     "success_msg": "✓ Vérifiez votre boîte mail — le PDF est en route !",
-    "vitrine": false
+    "vitrine": false,
+    "emailjs_template": "template_md5f3su"
   },
   {
     "id": 4,
@@ -57,6 +60,7 @@
     "formspree_id": null,
     "form_label": null,
     "success_msg": null,
-    "vitrine": true
+    "vitrine": true,
+    "emailjs_template": null
   }
 ]
