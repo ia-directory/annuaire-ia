@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Profil — Albexia</title>
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="https://albexia.com/profile.html" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/profile.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      <a href="index.html">
+        <svg viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg" height="32" aria-label="Albexia">
+          <polygon points="2,10 14,32 10,32"  fill="#ff6b9d"/>
+          <polygon points="14,2 18,12 10,12"  fill="#ff6b9d" opacity="0.6"/>
+          <polygon points="26,10 14,32 18,32" fill="#ff6b9d"/>
+          <text x="36" y="26" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#f0f0f5" letter-spacing="-0.5">
+            Albe<tspan fill="#ff6b9d">x</tspan>ia
+          </text>
+        </svg>
+      </a>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="window.location.href='index.html'">Accueil</button>
+      <button class="nav-link" onclick="window.location.href='index.html#tools'">Outils</button>
+    </div>
+    <div class="nav-profile-slot"></div>
+  </nav>
+
+  <!-- LOADING STATE -->
+  <div id="profile-loading" class="profile-loading">
+    <div class="profile-loading-spinner"></div>
+  </div>
+
+  <!-- REDIRECT si non connecté -->
+  <div id="profile-unauth" class="profile-unauth" style="display:none">
+    <div class="unauth-card">
+      <div class="unauth-icon">🔒</div>
+      <h2>Connexion requise</h2>
+      <p>Créez un compte gratuit pour accéder à votre profil, vos favoris et vos collections.</p>
+      <a href="auth.html" class="btn-primary">Se connecter</a>
+    </div>
+  </div>
+
+  <!-- PROFIL PRINCIPAL -->
+  <main id="profile-main" class="profile-main" style="display:none">
+
+    <!-- SIDEBAR -->
+    <aside class="profile-sidebar">
+
+      <!-- Avatar + nom -->
+      <div class="profile-identity">
+        <div class="profile-avatar" id="profile-avatar-display">?</div>
+        <div class="profile-identity-info">
+          <h1 class="profile-username" id="profile-username-display">—</h1>
+          <p class="profile-email" id="profile-email-display">—</p>
+        </div>
+      </div>
+
+      <!-- Stats rapides -->
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <strong id="stat-favorites">—</strong>
+          <span>Favoris</span>
+        </div>
+        <div class="profile-stat">
+          <strong id="stat-collections">—</strong>
+          <span>Collections</span>
+        </div>
+        <div class="profile-stat">
+          <strong id="stat-history">—</strong>
+          <span>Consultés</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="profile-nav" aria-label="Navigation profil">
+        <button class="profile-nav-item active" data-tab="dashboard">
+          <span class="pni-icon">📊</span> Tableau de bord
+        </button>
+        <button class="profile-nav-item" data-tab="favorites">
+          <span class="pni-icon">❤️</span> Mes favoris
+          <span class="pni-count" id="nav-count-favorites">0</span>
+        </button>
+        <button class="profile-nav-item" data-tab="collections">
+          <span class="pni-icon">📁</span> Collections
+          <span class="pni-count" id="nav-count-collections">0</span>
+        </button>
+        <button class="profile-nav-item" data-tab="history">
+          <span class="pni-icon">🕒</span> Historique
+        </button>
+        <button class="profile-nav-item" data-tab="notifications">
+          <span class="pni-icon">🔔</span> Notifications
+          <span class="pni-count pni-count--unread" id="nav-count-notifs">0</span>
+        </button>
+        <div class="profile-nav-divider"></div>
+        <button class="profile-nav-item" data-tab="settings">
+          <span class="pni-icon">⚙️</span> Paramètres
+        </button>
+        <button class="profile-nav-item profile-nav-logout" id="profile-logout-btn">
+          <span class="pni-icon">↩</span> Déconnexion
+        </button>
+      </nav>
+    </aside>
+
+    <!-- CONTENU PRINCIPAL -->
+    <section class="profile-content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="profile-tab active" id="tab-dashboard">
+        <div class="tab-header">
+          <h2 class="tab-title">Bonjour, <span id="dash-username">—</span> 👋</h2>
+          <p class="tab-sub">Votre espace personnel Albexia</p>
+        </div>
+
+        <div class="dash-cards">
+          <div class="dash-card" onclick="switchTab('favorites')">
+            <div class="dash-card-icon">❤️</div>
+            <div class="dash-card-info">
+              <strong id="dash-fav-count">0</strong>
+              <span>Favoris</span>
+            </div>
+          </div>
+          <div class="dash-card" onclick="switchTab('collections')">
+            <div class="dash-card-icon">📁</div>
+            <div class="dash-card-info">
+              <strong id="dash-col-count">0</strong>
+              <span>Collections</span>
+            </div>
+          </div>
+          <div class="dash-card" onclick="switchTab('history')">
+            <div class="dash-card-icon">🕒</div>
+            <div class="dash-card-info">
+              <strong id="dash-hist-count">0</strong>
+              <span>Consultés</span>
+            </div>
+          </div>
+          <div class="dash-card" onclick="switchTab('notifications')">
+            <div class="dash-card-icon">🔔</div>
+            <div class="dash-card-info">
+              <strong id="dash-notif-count">0</strong>
+              <span>Notifications</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activité récente -->
+        <div class="dash-recent">
+          <h3 class="dash-section-title">Récemment consultés</h3>
+          <div id="dash-recent-list" class="dash-recent-list">
+            <p class="empty-state">Aucun outil consulté pour l'instant.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FAVORIS ── -->
+      <div class="profile-tab" id="tab-favorites">
+        <div class="tab-header">
+          <h2 class="tab-title">❤️ Mes favoris</h2>
+          <p class="tab-sub">Vos outils IA préférés, toujours disponibles</p>
+        </div>
+        <div id="favorites-list" class="tools-grid">
+          <p class="empty-state">Aucun favori pour l'instant.<br>Cliquez sur ❤️ sur une fiche outil pour l'ajouter.</p>
+        </div>
+      </div>
+
+      <!-- ── COLLECTIONS ── -->
+      <div class="profile-tab" id="tab-collections">
+        <div class="tab-header">
+          <h2 class="tab-title">📁 Collections</h2>
+          <p class="tab-sub">Organisez vos outils IA par thème</p>
+          <button class="btn-primary btn-sm" id="btn-new-collection">+ Nouvelle collection</button>
+        </div>
+
+        <!-- Formulaire création -->
+        <div class="collection-form" id="collection-form" style="display:none">
+          <input type="text" id="collection-name-input" placeholder="Nom de la collection…" class="form-input" maxlength="50" />
+          <div class="collection-form-actions">
+            <button class="btn-primary btn-sm" id="btn-create-collection">Créer</button>
+            <button class="btn-ghost btn-sm" id="btn-cancel-collection">Annuler</button>
+          </div>
+        </div>
+
+        <div id="collections-list" class="collections-grid">
+          <p class="empty-state">Aucune collection.<br>Créez votre première collection pour organiser vos outils.</p>
+        </div>
+      </div>
+
+      <!-- ── HISTORIQUE ── -->
+      <div class="profile-tab" id="tab-history">
+        <div class="tab-header">
+          <h2 class="tab-title">🕒 Historique</h2>
+          <p class="tab-sub">Outils consultés récemment</p>
+          <button class="btn-ghost btn-sm" id="btn-clear-history">Vider l'historique</button>
+        </div>
+        <div id="history-list" class="tools-grid">
+          <p class="empty-state">Aucun historique pour l'instant.</p>
+        </div>
+      </div>
+
+      <!-- ── NOTIFICATIONS ── -->
+      <div class="profile-tab" id="tab-notifications">
+        <div class="tab-header">
+          <h2 class="tab-title">🔔 Notifications</h2>
+          <p class="tab-sub">Nouveautés, promotions et mises à jour</p>
+        </div>
+        <div id="notifications-list" class="notifications-list">
+          <p class="empty-state">Aucune notification pour l'instant.</p>
+        </div>
+      </div>
+
+      <!-- ── PARAMÈTRES ── -->
+      <div class="profile-tab" id="tab-settings">
+        <div class="tab-header">
+          <h2 class="tab-title">⚙️ Paramètres</h2>
+          <p class="tab-sub">Gérez votre compte</p>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Informations personnelles</h3>
+          <div class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Pseudo</label>
+              <input type="text" id="settings-username" class="form-input" placeholder="Votre pseudo" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="settings-email" class="form-input" disabled />
+              <small class="form-hint">L'email ne peut pas être modifié ici.</small>
+            </div>
+            <button class="btn-primary" id="btn-save-profile">Enregistrer</button>
+          </div>
+        </div>
+
+        <div class="settings-section settings-danger">
+          <h3 class="settings-section-title">Zone de danger</h3>
+          <p class="settings-danger-text">La suppression de votre compte est irréversible. Toutes vos données seront effacées.</p>
+          <button class="btn-danger" id="btn-delete-account">Supprimer mon compte</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script type="module">
+    import {
+      supabase, getUser, getProfile, updateProfile, signOut,
+      getFavorites, addFavorite, removeFavorite,
+      getCollections, createCollection, deleteCollection,
+      getHistory, clearHistory,
+      initNavProfile
+    } from './js/supabase.js';
+
+    /* ─── État global ─── */
+    let currentUser    = null;
+    let userProfile    = null;
+    let favoritesData  = [];
+    let collectionsData = [];
+    let historyData    = [];
+    let notificationsData = [];
+    let toolsMap       = {};  /* id → nom, pour affichage */
+
+    /* ─── Init ─── */
+    async function init() {
+      await initNavProfile();
+
+      currentUser = await getUser();
+
+      document.getElementById('profile-loading').style.display = 'none';
+
+      if (!currentUser) {
+        document.getElementById('profile-unauth').style.display = 'flex';
+        return;
+      }
+
+      document.getElementById('profile-main').style.display = 'flex';
+
+      /* Charger les données en parallèle */
+      await Promise.all([
+        loadProfile(),
+        loadFavorites(),
+        loadCollections(),
+        loadHistory(),
+        loadNotifications()
+      ]);
+
+      /* Hash navigation */
+      const hash = window.location.hash.replace('#','');
+      if (hash) switchTab(hash);
+
+      bindEvents();
+    }
+
+    /* ─── Chargement outils (tools.json) ─── */
+    async function loadToolsMap() {
+      if (Object.keys(toolsMap).length > 0) return;
+      try {
+        const res  = await fetch('/data/tools.json');
+        const data = await res.json();
+        data.forEach(t => { toolsMap[t.id || t.slug] = t; });
+      } catch {}
+    }
+
+    /* ─── Profil ─── */
+    async function loadProfile() {
+      try {
+        userProfile = await getProfile(currentUser.id);
+      } catch {
+        userProfile = { username: currentUser.email?.split('@')[0], email: currentUser.email };
+      }
+      const u = userProfile;
+      const initial = (u.username || u.email || '?')[0].toUpperCase();
+
+      document.getElementById('profile-avatar-display').textContent = initial;
+      document.getElementById('profile-username-display').textContent = u.username || '—';
+      document.getElementById('profile-email-display').textContent   = u.email    || '—';
+      document.getElementById('dash-username').textContent = u.username || 'vous';
+      document.getElementById('settings-username').value  = u.username || '';
+      document.getElementById('settings-email').value     = u.email    || '';
+    }
+
+    /* ─── Favoris ─── */
+    async function loadFavorites() {
+      try {
+        favoritesData = await getFavorites(currentUser.id);
+      } catch { favoritesData = []; }
+
+      const count = favoritesData.length;
+      document.getElementById('stat-favorites').textContent        = count;
+      document.getElementById('nav-count-favorites').textContent   = count;
+      document.getElementById('dash-fav-count').textContent        = count;
+
+      await loadToolsMap();
+      renderFavorites();
+    }
+
+    function renderFavorites() {
+      const el = document.getElementById('favorites-list');
+      if (!favoritesData.length) {
+        el.innerHTML = '<p class="empty-state">Aucun favori pour l\'instant.<br>Cliquez sur ❤️ sur une fiche outil.</p>';
+        return;
+      }
+      el.innerHTML = favoritesData.map(f => {
+        const tool = toolsMap[f.tool_id] || { name: f.tool_id };
+        return `
+          <div class="tool-card-mini">
+            <div class="tool-card-mini-info">
+              <strong>${tool.name || f.tool_id}</strong>
+              ${tool.category ? `<span class="tool-cat-badge">${tool.category}</span>` : ''}
+            </div>
+            <div class="tool-card-mini-actions">
+              <a href="/outils/${f.tool_id}.html" class="btn-ghost btn-xs">Voir →</a>
+              <button class="btn-icon btn-fav-remove" data-id="${f.tool_id}" title="Retirer">✕</button>
+            </div>
+          </div>`;
+      }).join('');
+
+      el.querySelectorAll('.btn-fav-remove').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await removeFavorite(currentUser.id, btn.dataset.id);
+          await loadFavorites();
+        });
+      });
+    }
+
+    /* ─── Collections ─── */
+    async function loadCollections() {
+      try {
+        collectionsData = await getCollections(currentUser.id);
+      } catch { collectionsData = []; }
+
+      const count = collectionsData.length;
+      document.getElementById('nav-count-collections').textContent = count;
+      document.getElementById('dash-col-count').textContent        = count;
+      renderCollections();
+    }
+
+    function renderCollections() {
+      const el = document.getElementById('collections-list');
+      if (!collectionsData.length) {
+        el.innerHTML = '<p class="empty-state">Aucune collection.<br>Créez votre première pour organiser vos outils.</p>';
+        return;
+      }
+      el.innerHTML = collectionsData.map(c => {
+        const toolCount = c.collection_tools?.length || 0;
+        return `
+          <div class="collection-card">
+            <div class="collection-card-icon">📁</div>
+            <div class="collection-card-info">
+              <strong>${c.name}</strong>
+              <span>${toolCount} outil${toolCount > 1 ? 's' : ''}</span>
+            </div>
+            <button class="btn-icon collection-delete" data-id="${c.id}" title="Supprimer">✕</button>
+          </div>`;
+      }).join('');
+
+      el.querySelectorAll('.collection-delete').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Supprimer cette collection ?')) return;
+          await deleteCollection(btn.dataset.id, currentUser.id);
+          await loadCollections();
+        });
+      });
+    }
+
+    /* ─── Historique ─── */
+    async function loadHistory() {
+      try {
+        historyData = await getHistory(currentUser.id, 50);
+      } catch { historyData = []; }
+
+      document.getElementById('stat-history').textContent   = historyData.length;
+      document.getElementById('dash-hist-count').textContent = historyData.length;
+
+      await loadToolsMap();
+      renderHistory();
+      renderDashRecent();
+    }
+
+    function renderHistory() {
+      const el = document.getElementById('history-list');
+      if (!historyData.length) {
+        el.innerHTML = '<p class="empty-state">Aucun historique.</p>';
+        return;
+      }
+
+      /* Grouper par date */
+      const groups = {};
+      historyData.forEach(h => {
+        const date = new Date(h.visited_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long' });
+        if (!groups[date]) groups[date] = [];
+        groups[date].push(h);
+      });
+
+      el.innerHTML = Object.entries(groups).map(([date, items]) => `
+        <div class="history-group">
+          <div class="history-date">${date}</div>
+          ${items.map(h => {
+            const tool = toolsMap[h.tool_id] || { name: h.tool_id };
+            return `
+              <div class="tool-card-mini">
+                <div class="tool-card-mini-info">
+                  <strong>${tool.name || h.tool_id}</strong>
+                </div>
+                <a href="/outils/${h.tool_id}.html" class="btn-ghost btn-xs">Voir →</a>
+              </div>`;
+          }).join('')}
+        </div>`).join('');
+    }
+
+    function renderDashRecent() {
+      const el    = document.getElementById('dash-recent-list');
+      const slice = historyData.slice(0, 5);
+      if (!slice.length) {
+        el.innerHTML = '<p class="empty-state">Aucun outil consulté.</p>';
+        return;
+      }
+      el.innerHTML = slice.map(h => {
+        const tool = toolsMap[h.tool_id] || { name: h.tool_id };
+        return `
+          <a href="/outils/${h.tool_id}.html" class="dash-recent-item">
+            <span class="dash-recent-name">${tool.name || h.tool_id}</span>
+            <span class="dash-recent-arrow">→</span>
+          </a>`;
+      }).join('');
+    }
+
+    /* ─── Notifications ─── */
+    async function loadNotifications() {
+      try {
+        const { data } = await supabase
+          .from('notifications')
+          .select('*')
+          .or(`user_id.eq.${currentUser.id},user_id.is.null`)
+          .order('created_at', { ascending: false })
+          .limit(30);
+        notificationsData = data || [];
+      } catch { notificationsData = []; }
+
+      const unread = notificationsData.filter(n => !n.is_read).length;
+      document.getElementById('nav-count-notifs').textContent  = unread;
+      document.getElementById('dash-notif-count').textContent  = notificationsData.length;
+      if (unread === 0) document.getElementById('nav-count-notifs').style.display = 'none';
+
+      renderNotifications();
+    }
+
+    function renderNotifications() {
+      const el = document.getElementById('notifications-list');
+      if (!notificationsData.length) {
+        el.innerHTML = '<p class="empty-state">Aucune notification.</p>';
+        return;
+      }
+      const icons = { info: '🔔', promo: '💰', update: '🔄', news: '📰' };
+      el.innerHTML = notificationsData.map(n => `
+        <div class="notif-item ${n.is_read ? '' : 'notif-item--unread'}" data-id="${n.id}">
+          <span class="notif-icon">${icons[n.type] || '🔔'}</span>
+          <div class="notif-body">
+            <strong class="notif-title">${n.title}</strong>
+            ${n.message ? `<p class="notif-msg">${n.message}</p>` : ''}
+            <span class="notif-date">${new Date(n.created_at).toLocaleDateString('fr-FR')}</span>
+          </div>
+          ${!n.is_read ? `<button class="notif-read-btn" data-id="${n.id}" title="Marquer comme lu">✓</button>` : ''}
+        </div>`).join('');
+
+      el.querySelectorAll('.notif-read-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await supabase.from('notifications').update({ is_read: true }).eq('id', btn.dataset.id);
+          await loadNotifications();
+        });
+      });
+    }
+
+    /* ─── Navigation tabs ─── */
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.profile-nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+      const navBtn = document.querySelector(`[data-tab="${tabId}"]`);
+      const tab    = document.getElementById(`tab-${tabId}`);
+      if (navBtn) navBtn.classList.add('active');
+      if (tab)    tab.classList.add('active');
+      history.replaceState(null, '', `#${tabId}`);
+    };
+
+    /* ─── Events ─── */
+    function bindEvents() {
+      /* Navigation */
+      document.querySelectorAll('.profile-nav-item[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      /* Déconnexion */
+      document.getElementById('profile-logout-btn').addEventListener('click', signOut);
+
+      /* Nouvelle collection */
+      document.getElementById('btn-new-collection').addEventListener('click', () => {
+        document.getElementById('collection-form').style.display = 'flex';
+        document.getElementById('collection-name-input').focus();
+      });
+      document.getElementById('btn-cancel-collection').addEventListener('click', () => {
+        document.getElementById('collection-form').style.display = 'none';
+        document.getElementById('collection-name-input').value = '';
+      });
+      document.getElementById('btn-create-collection').addEventListener('click', async () => {
+        const name = document.getElementById('collection-name-input').value.trim();
+        if (!name) return;
+        await createCollection(currentUser.id, name);
+        document.getElementById('collection-form').style.display = 'none';
+        document.getElementById('collection-name-input').value = '';
+        await loadCollections();
+      });
+
+      /* Vider historique */
+      document.getElementById('btn-clear-history').addEventListener('click', async () => {
+        if (!confirm('Vider tout l\'historique ?')) return;
+        await clearHistory(currentUser.id);
+        await loadHistory();
+      });
+
+      /* Sauvegarder profil */
+      document.getElementById('btn-save-profile').addEventListener('click', async () => {
+        const username = document.getElementById('settings-username').value.trim();
+        await updateProfile(currentUser.id, { username });
+        await loadProfile();
+        showToast('Profil mis à jour ✓');
+      });
+    }
+
+    /* ─── Toast ─── */
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'profile-toast';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.classList.add('visible'), 10);
+      setTimeout(() => { t.classList.remove('visible'); setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    init();
+  </script>
+
+</body>
+</html>
