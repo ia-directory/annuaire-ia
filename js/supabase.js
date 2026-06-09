@@ -53,7 +53,7 @@ export async function signIn(email, password) {
 export async function signInWithGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options:  { redirectTo: window.location.origin + '/profile.html' }
+    options:  { redirectTo: window.location.origin + 'profile.html' }
   });
   if (error) throw error;
 }
@@ -61,7 +61,7 @@ export async function signInWithGoogle() {
 /** Déconnexion */
 export async function signOut() {
   await supabase.auth.signOut();
-  window.location.href = '/index.html';
+  window.location.href = 'index.html';
 }
 
 /* ════════════════════════════════════════
@@ -227,7 +227,7 @@ export async function initNavProfile() {
 
   if (!user) {
     slot.innerHTML = `
-      <a href="/auth.html" class="btn-nav-auth">Connexion</a>`;
+      <a href="auth.html" class="btn-nav-auth">Connexion</a>`;
     return;
   }
 
@@ -242,11 +242,11 @@ export async function initNavProfile() {
       </button>
       <div class="nav-avatar-menu" id="nav-avatar-menu">
         <div class="nav-avatar-name">${profile?.username || 'Mon compte'}</div>
-        <a href="/profile.html"            class="nav-avatar-item">👤 Mon profil</a>
-        <a href="/profile.html#favorites"  class="nav-avatar-item">❤️ Favoris</a>
-        <a href="/profile.html#collections"class="nav-avatar-item">📁 Collections</a>
-        <a href="/profile.html#history"    class="nav-avatar-item">🕒 Historique</a>
-        <a href="/profile.html#notifications" class="nav-avatar-item">🔔 Notifications</a>
+        <a href="profile.html"            class="nav-avatar-item">👤 Mon profil</a>
+        <a href="profile.html#favorites"  class="nav-avatar-item">❤️ Favoris</a>
+        <a href="profile.html#collections"class="nav-avatar-item">📁 Collections</a>
+        <a href="profile.html#history"    class="nav-avatar-item">🕒 Historique</a>
+        <a href="profile.html#notifications" class="nav-avatar-item">🔔 Notifications</a>
         <div class="nav-avatar-divider"></div>
         <button class="nav-avatar-item nav-avatar-logout" id="nav-logout">Déconnexion</button>
       </div>
