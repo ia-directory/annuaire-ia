@@ -83,6 +83,7 @@
 
   <!-- ─── NAVIGATION ─── -->
   <nav>
+   <div class="nav-profile-slot"></div>
    <div class="logo">
       <svg viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg" height="32" aria-label="Albexia">
   <style>
@@ -806,7 +807,10 @@
 
 </div>
 
-  
+  <script type="module">
+  import { initNavProfile } from './js/supabase.js';
+  initNavProfile();
+  </script>
 
   <script>
 function handleFooterNewsletter(e) {
