@@ -74,6 +74,23 @@ export async function getProfile(userId) {
     .select('*')
     .eq('id', userId)
     .single();
+
+  /* Profil absent (Google OAuth sans signUp) → création automatique */
+  if (error && error.code === 'PGRST116') {
+    const { data: { user } } = await supabase.auth.getUser();
+    const username = user?.user_metadata?.full_name
+      || user?.user_metadata?.name
+      || user?.email?.split('@')[0]
+      || 'utilisateur';
+    const { data: created, error: createErr } = await supabase
+      .from('profiles')
+      .insert({ id: userId, username, email: user?.email })
+      .select()
+      .single();
+    if (createErr) throw createErr;
+    return created;
+  }
+
   if (error) throw error;
   return data;
 }
