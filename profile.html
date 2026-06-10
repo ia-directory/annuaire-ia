@@ -306,18 +306,17 @@
       const LS_KEY  = 'annuaireIA_favorites';
       const MIG_KEY = 'albexia_migration_done';
       try {
-        if (localStorage.getItem(MIG_KEY) === 'true') return;
         const raw = localStorage.getItem(LS_KEY);
-        if (!raw) { localStorage.setItem(MIG_KEY, 'true'); return; }
+        if (!raw) return;
         const ids = JSON.parse(raw);
-        if (!Array.isArray(ids) || ids.length === 0) { localStorage.setItem(MIG_KEY, 'true'); return; }
+        if (!Array.isArray(ids) || ids.length === 0) return;
+        /* upsert = pas de doublon même si déjà migré */
         const inserts = ids.map(id => ({ user_id: userId, tool_id: String(id) }));
         const { error } = await supabase
           .from('favorites')
           .upsert(inserts, { onConflict: 'user_id,tool_id' });
         if (!error) {
-          localStorage.setItem(MIG_KEY, 'true');
-          console.log(`✅ ${ids.length} favori(s) migré(s) vers Supabase`);
+          console.log(\`✅ \${ids.length} favori(s) synchronisé(s) vers Supabase\`);
         }
       } catch (e) {
         console.warn('Migration favoris:', e);
