@@ -3183,4 +3183,122 @@ nav .logo { display: flex; align-items: center; }
     grid-template-columns: 1fr;
   }
 }
+/* ═══════════════════════════════════════
+   Albexia — Bloc à ajouter à la fin de style.css
+   Fix menu avatar nav + toutes les pages
+   ═══════════════════════════════════════ */
 
+/* ─── BOUTON CONNEXION DANS LA NAV ─── */
+.nav-profile-slot {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.btn-nav-auth {
+  padding: 7px 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: inherit;
+  transition: opacity .15s;
+  white-space: nowrap;
+}
+.btn-nav-auth:hover { opacity: .85; }
+
+/* ─── AVATAR ─── */
+.nav-avatar-wrap {
+  position: relative;
+}
+
+.nav-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .15s, transform .15s;
+  line-height: 1;
+}
+.nav-avatar:hover {
+  opacity: .9;
+  transform: scale(1.05);
+}
+
+/* ─── MENU DÉROULANT ─── */
+.nav-avatar-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 8px;
+  min-width: 210px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  z-index: 9999;
+}
+.nav-avatar-menu.open { display: block; }
+
+.nav-avatar-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  padding: 6px 10px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nav-avatar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  transition: all .15s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  line-height: 1;
+}
+.nav-avatar-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+}
+
+.nav-avatar-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 6px 0;
+}
+
+.nav-avatar-logout {
+  color: rgba(224,92,92,0.8) !important;
+}
+.nav-avatar-logout:hover {
+  background: rgba(224,92,92,0.12) !important;
+  color: #e05c5c !important;
+   }
