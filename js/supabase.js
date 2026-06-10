@@ -12,6 +12,9 @@ const SUPABASE_ANON = 'sb_publishable_L7WRDMPd0mfYo7YC49cxsA_lz62Bb10';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+/* Exposé globalement pour app.js (non-module) */
+window._supabase = supabase;
+
 /* ════════════════════════════════════════
    AUTH
    ════════════════════════════════════════ */
