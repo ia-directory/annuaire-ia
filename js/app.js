@@ -111,34 +111,38 @@ function saveFavorites() {
 
 async function toggleFavorite(toolId, event) {
   event.stopPropagation();
+
+  /* Non connecté → invitation à créer un compte */
+  if (!window._sbUser) {
+    showToastWithLink(
+      '♥ Connectez-vous pour sauvegarder vos favoris',
+      'Créer un compte',
+      'auth.html'
+    );
+    return;
+  }
+
   const id = String(toolId);
   if (state.favorites.has(id)) {
     state.favorites.delete(id);
     showToast('Retiré des favoris');
-    /* Sync Supabase si connecté */
-    if (window._sbUser) {
-      try {
-        const { supabase } = await import('./js/supabase.js');
-        await supabase.from('favorites').delete()
-          .eq('user_id', window._sbUser.id).eq('tool_id', id);
-      } catch {}
-    }
+    try {
+      const { supabase } = await import('./js/supabase.js');
+      await supabase.from('favorites').delete()
+        .eq('user_id', window._sbUser.id).eq('tool_id', id);
+    } catch {}
   } else {
     state.favorites.add(id);
     showToast('♥ Ajouté aux favoris !');
-    /* Sync Supabase si connecté */
-    if (window._sbUser) {
-      try {
-        const { supabase } = await import('./js/supabase.js');
-        await supabase.from('favorites')
-          .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
-      } catch {}
-    }
+    try {
+      const { supabase } = await import('./js/supabase.js');
+      await supabase.from('favorites')
+        .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
+    } catch {}
   }
   saveFavorites();
   updateFavCount();
   renderTools();
-  renderFavorites();
 }
 
 function updateFavCount() {
@@ -206,6 +210,25 @@ function showToast(msg) {
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════
+// TOAST AVEC LIEN
+// ═══════════════════════════════════════
+
+function showToastWithLink(msg, linkText, linkHref) {
+  const existing = document.getElementById('toast-link');
+  if (existing) existing.remove();
+
+  const el = document.createElement('div');
+  el.id = 'toast-link';
+  el.className = 'toast-link show';
+  el.innerHTML = `
+    <span>${msg}</span>
+    <a href="${linkHref}" class="toast-link-btn">${linkText} →</a>
+    <button class="toast-link-close" onclick="this.parentElement.remove()">✕</button>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
 }
 
 // ═══════════════════════════════════════
