@@ -111,38 +111,32 @@ function saveFavorites() {
 
 async function toggleFavorite(toolId, event) {
   event.stopPropagation();
-
-  /* Non connecté → invitation à créer un compte */
-  if (!window._sbUser) {
-    showToastWithLink(
-      '♥ Connectez-vous pour sauvegarder vos favoris',
-      'Créer un compte',
-      'auth.html'
-    );
-    return;
-  }
-
   const id = String(toolId);
   if (state.favorites.has(id)) {
     state.favorites.delete(id);
     showToast('Retiré des favoris');
-    try {
-      const { supabase } = await import('./js/supabase.js');
-      await supabase.from('favorites').delete()
-        .eq('user_id', window._sbUser.id).eq('tool_id', id);
-    } catch {}
+    /* Sync Supabase si connecté */
+    if (window._sbUser && window._supabase) {
+      try {
+        await window._supabase.from('favorites').delete()
+          .eq('user_id', window._sbUser.id).eq('tool_id', id);
+      } catch(e) { console.warn('fav remove:', e); }
+    }
   } else {
     state.favorites.add(id);
     showToast('♥ Ajouté aux favoris !');
-    try {
-      const { supabase } = await import('./js/supabase.js');
-      await supabase.from('favorites')
-        .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
-    } catch {}
+    /* Sync Supabase si connecté */
+    if (window._sbUser && window._supabase) {
+      try {
+        await window._supabase.from('favorites')
+          .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
+      } catch(e) { console.warn('fav add:', e); }
+    }
   }
   saveFavorites();
   updateFavCount();
   renderTools();
+  renderFavorites();
 }
 
 function updateFavCount() {
@@ -210,25 +204,6 @@ function showToast(msg) {
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-// ═══════════════════════════════════════
-// TOAST AVEC LIEN
-// ═══════════════════════════════════════
-
-function showToastWithLink(msg, linkText, linkHref) {
-  const existing = document.getElementById('toast-link');
-  if (existing) existing.remove();
-
-  const el = document.createElement('div');
-  el.id = 'toast-link';
-  el.className = 'toast-link show';
-  el.innerHTML = `
-    <span>${msg}</span>
-    <a href="${linkHref}" class="toast-link-btn">${linkText} →</a>
-    <button class="toast-link-close" onclick="this.parentElement.remove()">✕</button>`;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 5000);
 }
 
 // ═══════════════════════════════════════
@@ -338,11 +313,19 @@ async function handleCardClick(toolId, page, url, event) {
   if (event.target.closest('.fav-btn') || event.target.closest('.col-btn')) return;
 
   /* Enregistrer dans l'historique Supabase si connecté */
-  if (window._sbUser) {
+  if (window._sbUser && window._supabase) {
     try {
-      const { addToHistory } = await import('./js/supabase.js');
-      await addToHistory(window._sbUser.id, String(toolId));
-    } catch {}
+      const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
+      const { data: existing } = await window._supabase
+        .from('history').select('id')
+        .eq('user_id', window._sbUser.id)
+        .eq('tool_id', String(toolId))
+        .gte('visited_at', oneHourAgo).limit(1);
+      if (!existing || existing.length === 0) {
+        await window._supabase.from('history')
+          .insert({ user_id: window._sbUser.id, tool_id: String(toolId) });
+      }
+    } catch(e) { console.warn('history:', e); }
   }
 
   /* Naviguer */
@@ -373,8 +356,14 @@ async function openCollectionMenu(toolId, toolName, event) {
   /* Charger les collections */
   let collections = [];
   try {
-    const { getCollections } = await import('./js/supabase.js');
-    collections = await getCollections(window._sbUser.id);
+    if (window._supabase) {
+      const { data } = await window._supabase
+        .from('collections')
+        .select('*, collection_tools(tool_id)')
+        .eq('user_id', window._sbUser.id)
+        .order('created_at', { ascending: false });
+      collections = data || [];
+    }
   } catch {}
 
   /* Construire le menu */
@@ -410,8 +399,8 @@ async function openCollectionMenu(toolId, toolName, event) {
   menu.querySelectorAll('.col-menu-item').forEach(item => {
     item.addEventListener('click', async () => {
       try {
-        const { addToolToCollection } = await import('./js/supabase.js');
-        await addToolToCollection(item.dataset.colId, item.dataset.toolId);
+        await window._supabase.from('collection_tools')
+          .upsert({ collection_id: item.dataset.colId, tool_id: item.dataset.toolId }, { onConflict: 'collection_id,tool_id' });
         showToast('✓ Ajouté à la collection');
       } catch { showToast('Déjà dans cette collection'); }
       menu.remove();
@@ -423,9 +412,11 @@ async function openCollectionMenu(toolId, toolName, event) {
     const name = document.getElementById('col-menu-input').value.trim();
     if (!name) return;
     try {
-      const { createCollection, addToolToCollection } = await import('./js/supabase.js');
-      const col = await createCollection(window._sbUser.id, name);
-      await addToolToCollection(col.id, String(toolId));
+      const { data: col } = await window._supabase.from('collections')
+        .insert({ user_id: window._sbUser.id, name })
+        .select().single();
+      await window._supabase.from('collection_tools')
+        .insert({ collection_id: col.id, tool_id: String(toolId) });
       showToast(`✓ Collection "${name}" créée`);
     } catch { showToast('Erreur création collection'); }
     menu.remove();
@@ -450,8 +441,12 @@ window.openCollectionMenu = openCollectionMenu;
 
 async function initSupabaseUser() {
   try {
-    const { getUser } = await import('./js/supabase.js');
-    window._sbUser = await getUser();
+    if (window._supabase) {
+      const { data: { user } } = await window._supabase.auth.getUser();
+      window._sbUser = user || null;
+    } else {
+      window._sbUser = null;
+    }
   } catch {
     window._sbUser = null;
   }
