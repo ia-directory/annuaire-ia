@@ -302,7 +302,7 @@
     async function loadToolsMap() {
       if (Object.keys(toolsMap).length > 0) return;
       try {
-        const res  = await fetch('/data/tools.json');
+        const res  = await fetch('data/tools.json');
         const data = await res.json();
         data.forEach(t => { toolsMap[t.id || t.slug] = t; });
       } catch {}
@@ -377,6 +377,7 @@
       } catch { collectionsData = []; }
 
       const count = collectionsData.length;
+      document.getElementById('stat-collections').textContent     = count;
       document.getElementById('nav-count-collections').textContent = count;
       document.getElementById('dash-col-count').textContent        = count;
       renderCollections();
