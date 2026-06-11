@@ -439,6 +439,20 @@ window.openCollectionMenu = openCollectionMenu;
 // INIT SUPABASE USER (silencieux)
 // ═══════════════════════════════════════
 
+/* Attend que le module supabase.js ait exposé window._supabase */
+function waitForSupabase(timeout = 3000) {
+  return new Promise((resolve) => {
+    if (window._supabase) { resolve(); return; }
+    const start = Date.now();
+    const check = setInterval(() => {
+      if (window._supabase || Date.now() - start > timeout) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 50);
+  });
+}
+
 async function initSupabaseUser() {
   try {
     if (window._supabase) {
@@ -462,11 +476,12 @@ async function loadAllData() {
     state.tools   = tools;
     state.blog    = blog;
     state.gallery = gallery;
-    await initSupabaseUser(); /* ← charge l'utilisateur Supabase */
+    /* Attendre que window._supabase soit disponible (module script async) */
+    await waitForSupabase();
+    await initSupabaseUser();
     renderTools();
     renderBlog();
     renderGallery();
-    renderFavorites();
     updateFavCount();
     checkToolsParam(); // ← Spotlight notification
   } catch (err) {
@@ -488,13 +503,14 @@ function filtrerParLangue(items) {
 // ═══════════════════════════════════════
 
 function showPage(pageId) {
+  if (!pageId) return; /* Guard: évite crash si pageId undefined */
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
   const btn = document.querySelector(`.nav-link[data-page="${pageId}"]`);
   if (btn) btn.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (pageId === 'favorites') renderFavorites();
+  if (pageId === 'favorites') { window.location.href = 'profile.html#favorites'; return; }
 }
 
 // ═══════════════════════════════════════
