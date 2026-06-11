@@ -1254,3 +1254,8 @@ window.closeSpotlight = closeSpotlight;
     });
   }
 })();
+
+window.onerror = function(msg, src, line) {
+  document.body.innerHTML = '<div style="color:red;padding:20px;font-size:14px">' +
+    'ERREUR: ' + msg + '<br>Ligne: ' + line + '</div>';
+};
