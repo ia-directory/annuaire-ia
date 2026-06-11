@@ -440,7 +440,7 @@ window.openCollectionMenu = openCollectionMenu;
 // ═══════════════════════════════════════
 
 /* Attend que le module supabase.js ait exposé window._supabase */
-function waitForSupabase(timeout = 3000) {
+function waitForSupabase(timeout = 5000) {
   return new Promise((resolve) => {
     if (window._supabase) { resolve(); return; }
     const start = Date.now();
@@ -453,14 +453,26 @@ function waitForSupabase(timeout = 3000) {
   });
 }
 
+/* Attend que _sbUser soit résolu par supabase.js (défini = user ou null) */
+function waitForSbUser(timeout = 4000) {
+  return new Promise((resolve) => {
+    if ('_sbUser' in window) { resolve(); return; }
+    const start = Date.now();
+    const check = setInterval(() => {
+      if ('_sbUser' in window || Date.now() - start > timeout) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 50);
+  });
+}
+
 async function initSupabaseUser() {
   try {
-    if (window._supabase) {
-      const { data: { user } } = await window._supabase.auth.getUser();
-      window._sbUser = user || null;
-    } else {
-      window._sbUser = null;
-    }
+    await waitForSupabase();
+    await waitForSbUser();
+    /* _sbUser est déjà peuplé par supabase.js via getUser() + onAuthStateChange */
+    if (!('_sbUser' in window)) window._sbUser = null;
   } catch {
     window._sbUser = null;
   }

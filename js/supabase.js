@@ -15,6 +15,14 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
 /* Exposé globalement pour app.js (non-module) */
 window._supabase = supabase;
 
+/* ─── Exposer _sbUser dès que possible + maintenir à jour ─── */
+supabase.auth.getUser().then(({ data: { user } }) => {
+  window._sbUser = user || null;
+});
+supabase.auth.onAuthStateChange((_event, session) => {
+  window._sbUser = session?.user || null;
+});
+
 /* ════════════════════════════════════════
    AUTH
    ════════════════════════════════════════ */
