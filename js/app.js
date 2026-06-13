@@ -6,7 +6,6 @@
 
 'use strict';
 
-const LS_KEY      = 'annuaireIA_favorites';
 const LS_LANG_KEY = 'albexia_langue';
 
 // ─── LANGUE ──────────────────────────────
@@ -39,7 +38,6 @@ function changerLangue(code) {
   renderTools();
   renderBlog();
   renderGallery();
-  renderFavorites();
 }
 
 // ─── STATE ───────────────────────────────
@@ -52,7 +50,7 @@ const state = {
   activeBlogCat:    'Tous',
   activeGalleryCat: 'Tous',
   searchQuery: '',
-  favorites: loadFavorites(),
+  favorites: new Set(), /* Géré par Supabase via albexia-supabase.js */
   toolsPage:   1,
   blogPage:    1,
   galleryPage: 1,
@@ -89,106 +87,48 @@ const galleryColors = {
 };
 
 // ═══════════════════════════════════════
-// FAVORIS
+// FAVORIS — Supabase uniquement
 // ═══════════════════════════════════════
 
-function loadFavorites() {
+async function loadFavoritesFromSupabase() {
+  if (!window._sbUser || !window._albexia) return;
   try {
-    const raw = localStorage.getItem(LS_KEY);
-    return raw ? new Set(JSON.parse(raw)) : new Set();
-  } catch {
-    return new Set();
-  }
-}
-
-function saveFavorites() {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify([...state.favorites]));
-  } catch (e) {
-    console.warn('localStorage indisponible:', e);
-  }
+    const favs = await window._albexia.getFavorites(window._sbUser.id);
+    state.favorites = new Set(favs.map(f => String(f.tool_id)));
+    updateFavCount();
+    renderTools();
+  } catch (e) { console.warn('loadFavorites:', e); }
 }
 
 async function toggleFavorite(toolId, event) {
   event.stopPropagation();
   const id = String(toolId);
+
+  if (!window._sbUser) {
+    showToast('Connectez-vous pour sauvegarder des favoris');
+    setTimeout(() => window.location.href = 'auth.html', 1500);
+    return;
+  }
+
   if (state.favorites.has(id)) {
     state.favorites.delete(id);
     showToast('Retiré des favoris');
-    /* Sync Supabase si connecté */
-    if (window._sbUser && window._supabase) {
-      try {
-        await window._supabase.from('favorites').delete()
-          .eq('user_id', window._sbUser.id).eq('tool_id', id);
-      } catch(e) { console.warn('fav remove:', e); }
-    }
+    try { await window._albexia.removeFavorite(window._sbUser.id, id); }
+    catch (e) { console.warn('fav remove:', e); state.favorites.add(id); }
   } else {
     state.favorites.add(id);
     showToast('♥ Ajouté aux favoris !');
-    /* Sync Supabase si connecté */
-    if (window._sbUser && window._supabase) {
-      try {
-        await window._supabase.from('favorites')
-          .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
-      } catch(e) { console.warn('fav add:', e); }
-    }
+    try { await window._albexia.addFavorite(window._sbUser.id, id); }
+    catch (e) { console.warn('fav add:', e); state.favorites.delete(id); }
   }
-  saveFavorites();
   updateFavCount();
   renderTools();
-  renderFavorites();
 }
 
 function updateFavCount() {
   const count = state.favorites.size;
   const badge = document.getElementById('nav-fav-count');
   if (badge) badge.textContent = count > 0 ? count : '';
-}
-
-function renderFavorites() {
-  const favTools = filtrerParLangue(state.tools).filter(t => state.favorites.has(String(t.id)));
-  const grid = document.getElementById('fav-grid');
-  if (!grid) return;
-
-  if (favTools.length === 0) {
-    grid.innerHTML = `
-      <div class="fav-empty" style="grid-column:1/-1">
-        <div class="fav-empty-icon">♡</div>
-        <h3>Aucun favori pour l'instant</h3>
-        <p>Cliquez sur le cœur ♥ d'un outil pour le sauvegarder ici.</p>
-        <button class="btn-main" onclick="showPage('tools')">Explorer les outils</button>
-      </div>`;
-    return;
-  }
-
-  const priceLabel = { free: 'Gratuit', freemium: 'Freemium', paid: 'Payant' };
-  grid.innerHTML = favTools.map(t => {
-    const col = catColors[t.category] || { bg: 'rgba(255,255,255,0.08)' };
-    const iconHtml = t.favicon
-      ? `<img src="${t.favicon}" alt="${t.name}" class="tool-favicon"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-            onload="this.nextElementSibling.style.display='none'">
-         <span class="tool-ico-fallback" style="display:none">${t.emoji}</span>`
-      : `<span class="tool-ico-fallback">${t.emoji}</span>`;
-    return `
-      <article class="tool-card" onclick="window.open('${t.url}','_blank')">
-        <div class="tool-head">
-          <div class="tool-ico" style="background:${col.bg}">${iconHtml}</div>
-          <div style="flex:1">
-            <div class="tool-name">${t.name}</div>
-            <div class="tool-cat">${t.category}</div>
-          </div>
-          <button class="fav-btn active"
-            onclick="toggleFavorite(${t.id}, event)"
-            title="Retirer des favoris">♥</button>
-        </div>
-        <p class="tool-desc">${t.description}</p>
-        <div class="tool-foot">
-          <span class="price-tag price-${t.price}">${priceLabel[t.price]}</span>
-          <span class="stars">${renderStars(t.rating)}</span>
-        </div>
-      </article>`;
-  }).join('');
 }
 
 // ═══════════════════════════════════════
@@ -313,19 +253,9 @@ async function handleCardClick(toolId, page, url, event) {
   if (event.target.closest('.fav-btn') || event.target.closest('.col-btn')) return;
 
   /* Enregistrer dans l'historique Supabase si connecté */
-  if (window._sbUser && window._supabase) {
-    try {
-      const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
-      const { data: existing } = await window._supabase
-        .from('history').select('id')
-        .eq('user_id', window._sbUser.id)
-        .eq('tool_id', String(toolId))
-        .gte('visited_at', oneHourAgo).limit(1);
-      if (!existing || existing.length === 0) {
-        await window._supabase.from('history')
-          .insert({ user_id: window._sbUser.id, tool_id: String(toolId) });
-      }
-    } catch(e) { console.warn('history:', e); }
+  if (window._sbUser && window._albexia) {
+    try { await window._albexia.addToHistory(window._sbUser.id, String(toolId)); }
+    catch (e) { console.warn('history:', e); }
   }
 
   /* Naviguer */
@@ -436,47 +366,20 @@ async function openCollectionMenu(toolId, toolName, event) {
 window.openCollectionMenu = openCollectionMenu;
 
 // ═══════════════════════════════════════
-// INIT SUPABASE USER (silencieux)
+// INIT SUPABASE USER
 // ═══════════════════════════════════════
 
-/* Attend que le module supabase.js ait exposé window._supabase */
-function waitForSupabase(timeout = 5000) {
-  return new Promise((resolve) => {
-    if (window._supabase) { resolve(); return; }
-    const start = Date.now();
-    const check = setInterval(() => {
-      if (window._supabase || Date.now() - start > timeout) {
-        clearInterval(check);
-        resolve();
-      }
-    }, 50);
-  });
-}
-
-/* Attend que _sbUser soit résolu par supabase.js (défini = user ou null) */
-function waitForSbUser(timeout = 4000) {
-  return new Promise((resolve) => {
-    if ('_sbUser' in window) { resolve(); return; }
-    const start = Date.now();
-    const check = setInterval(() => {
-      if ('_sbUser' in window || Date.now() - start > timeout) {
-        clearInterval(check);
-        resolve();
-      }
-    }, 50);
-  });
-}
-
-async function initSupabaseUser() {
-  try {
-    await waitForSupabase();
-    await waitForSbUser();
-    /* _sbUser est déjà peuplé par supabase.js via getUser() + onAuthStateChange */
-    if (!('_sbUser' in window)) window._sbUser = null;
-  } catch {
-    window._sbUser = null;
+/* Écoute l'événement émis par albexia-supabase.js */
+window.addEventListener('albexia:userready', async (e) => {
+  window._sbUser = e.detail;
+  if (window._sbUser) {
+    await loadFavoritesFromSupabase();
+  } else {
+    state.favorites = new Set();
+    updateFavCount();
+    renderTools();
   }
-}
+});
 
 async function loadAllData() {
   try {
@@ -488,14 +391,13 @@ async function loadAllData() {
     state.tools   = tools;
     state.blog    = blog;
     state.gallery = gallery;
-    /* Attendre que window._supabase soit disponible (module script async) */
-    await waitForSupabase();
-    await initSupabaseUser();
     renderTools();
     renderBlog();
     renderGallery();
     updateFavCount();
-    checkToolsParam(); // ← Spotlight notification
+    checkToolsParam();
+    /* Si l'user est déjà connu au moment du chargement, charger ses favoris */
+    if (window._sbUser) await loadFavoritesFromSupabase();
   } catch (err) {
     console.error('Erreur chargement données:', err);
     showError('tools-grid',   'Impossible de charger les outils.');
@@ -1257,7 +1159,7 @@ window.closeSpotlight = closeSpotlight;
 // ── NAVIGATION DEPUIS LES PAGES SECONDAIRES ──
 (function() {
   const hash = window.location.hash.replace('#', '');
-  const pages = ['tools', 'blog', 'gallery', 'favorites'];
+  const pages = ['tools', 'blog', 'gallery'];
   if (pages.includes(hash)) {
     window.addEventListener('DOMContentLoaded', () => {
       if (typeof showPage === 'function') {
