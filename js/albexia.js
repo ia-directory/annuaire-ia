@@ -1,8 +1,6 @@
 /* ═══════════════════════════════════════════════════════
-   Albexia — albexia.js  (fichier unique)
-   Gère : Supabase, Auth Google, Nav avatar,
-          Index (outils/blog/galerie/quiz/collections),
-          Profile (favoris, collections, historique, notifs)
+   Albexia — albexia.js  (Firebase Edition)
+   Remplace Supabase par Firebase Auth + Firestore
    Usage :
      index.html   → <script src="js/albexia.js"></script>
      profile.html → <script src="js/albexia.js"></script>
@@ -13,89 +11,108 @@
   'use strict';
 
   /* ════════════════════════════════════════
-     1. CHARGER SUPABASE (UMD)
+     1. CHARGER FIREBASE (CDN)
   ════════════════════════════════════════ */
-  await new Promise((resolve, reject) => {
-    if (window.supabase && window.supabase.createClient) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
 
-  const SUPABASE_URL  = 'https://cqjmczfjzosnnrlmfbmm.supabase.co';
-  const SUPABASE_ANON = 'sb_publishable_L7WRDMPd0mfYo7YC49cxsA_lz62Bb10';
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-  /* Exposer globalement pour compatibilité */
-  window._supabase = sb;
+  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
+  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js');
+  await loadScript('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
 
   /* ════════════════════════════════════════
-     2. AUTH
+     2. INITIALISER FIREBASE
+  ════════════════════════════════════════ */
+  const firebaseConfig = {
+    apiKey:            "AIzaSyA6B14vp5wz-0em9eboEAXRVhHy7WF_Lvk",
+    authDomain:        "albexia-dc650.firebaseapp.com",
+    projectId:         "albexia-dc650",
+    storageBucket:     "albexia-dc650.firebasestorage.app",
+    messagingSenderId: "805830291200",
+    appId:             "1:805830291200:web:c24122224c1abaf4360de5"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+
+  /* Exposer globalement pour compatibilité avec app.js */
+  window._firebase = { auth, db };
+
+  /* ════════════════════════════════════════
+     3. AUTH — fonctions principales
   ════════════════════════════════════════ */
   const IS_PROFILE = document.getElementById('profile-main') !== null;
   const IS_AUTH    = document.getElementById('btn-login')    !== null;
   const IS_INDEX   = !IS_PROFILE && !IS_AUTH;
 
-  async function getSession() {
-    const { data: { session } } = await sb.auth.getSession();
-    return session;
-  }
-
   async function signOut() {
-    await sb.auth.signOut();
+    await auth.signOut();
     window.location.href = 'index.html';
   }
 
   async function signInWithGoogle() {
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/profile.html' }
-    });
-    if (error) console.error('Google OAuth:', error.message);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      await auth.signInWithPopup(provider);
+      window.location.href = 'profile.html';
+    } catch (e) {
+      console.error('Google OAuth:', e.message);
+      throw e;
+    }
   }
 
   async function signIn(email, password) {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    return data;
+    const { user } = await auth.signInWithEmailAndPassword(email, password);
+    return user;
   }
 
   async function signUp(email, password, username) {
-    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { username } } });
-    if (error) throw error;
-    if (data.user) {
-      await sb.from('profiles').upsert({
-        id: data.user.id,
+    const { user } = await auth.createUserWithEmailAndPassword(email, password);
+    if (user) {
+      await db.collection('profiles').doc(user.uid).set({
         username: username || email.split('@')[0],
-        email
-      }, { onConflict: 'id' });
+        email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
     }
-    return data;
+    return user;
   }
 
-  /* Exposer pour auth.html (inline handlers) */
-  window._auth = { signIn, signUp, signInWithGoogle, sb };
+  async function resetPassword(email) {
+    await auth.sendPasswordResetEmail(email);
+  }
+
+  /* Exposer pour auth.html */
+  window._auth = { signIn, signUp, signInWithGoogle, resetPassword };
 
   /* ════════════════════════════════════════
-     3. PROFIL SUPABASE
+     4. PROFIL FIRESTORE
   ════════════════════════════════════════ */
   async function ensureProfile(user) {
-    const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).single();
-    if (!error && data) return data;
-    const username = user.user_metadata?.full_name
-      || user.user_metadata?.name
-      || user.email?.split('@')[0]
-      || 'utilisateur';
-    const { data: created } = await sb.from('profiles')
-      .upsert({ id: user.id, username, email: user.email }, { onConflict: 'id' })
-      .select().single();
-    return created || { username, email: user.email };
+    const ref = db.collection('profiles').doc(user.uid);
+    const snap = await ref.get();
+    if (snap.exists) return snap.data();
+    const username = user.displayName || user.email?.split('@')[0] || 'utilisateur';
+    const profile  = { username, email: user.email,
+                       createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+    await ref.set(profile, { merge: true });
+    return profile;
   }
 
   /* ════════════════════════════════════════
-     4. NAV AVATAR (toutes les pages)
+     5. NAV AVATAR (toutes les pages)
   ════════════════════════════════════════ */
   async function initNav(user, profile) {
     const slot = document.querySelector('.nav-profile-slot');
@@ -131,7 +148,7 @@
   }
 
   /* ════════════════════════════════════════
-     5. TOOLS MAP (tools.json)
+     6. TOOLS MAP (tools.json)
   ════════════════════════════════════════ */
   let toolsMap = {};
 
@@ -152,14 +169,13 @@
   const toolUrl      = id => toolsMap[String(id)]?.page || toolsMap[String(id)]?.url || '#';
 
   /* ════════════════════════════════════════
-     6. HELPERS UI
+     7. HELPERS UI
   ════════════════════════════════════════ */
   function setEl(id, text)  { const e = document.getElementById(id); if (e) e.textContent = text; }
   function setVal(id, val)  { const e = document.getElementById(id); if (e) e.value = val; }
   function setCount(id, n)  { const e = document.getElementById(id); if (e) e.textContent = n; }
 
   function showToast(msg) {
-    /* Toast profile */
     const t = document.createElement('div');
     t.className = 'profile-toast';
     t.textContent = msg;
@@ -169,15 +185,11 @@
   }
 
   /* ════════════════════════════════════════
-     7. PAGE PROFIL
+     8. PAGE PROFIL
   ════════════════════════════════════════ */
   async function initProfile(user, profile) {
-    let favoritesData   = [];
-    let collectionsData = [];
-    let historyData     = [];
-    let notificationsData = [];
+    await loadToolsMap();
 
-    /* Affichage header profil */
     const username = profile?.username || user.email?.split('@')[0] || '—';
     const initial  = username[0].toUpperCase();
     setEl('profile-avatar-display',   initial);
@@ -189,223 +201,210 @@
 
     /* ── Favoris ── */
     async function loadFavorites() {
-      const { data } = await sb.from('favorites')
-        .select('tool_id, created_at').eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      favoritesData = data || [];
-      setCount('stat-favorites',      favoritesData.length);
-      setCount('nav-count-favorites', favoritesData.length);
-      setCount('dash-fav-count',      favoritesData.length);
-      renderFavorites();
+      const snap = await db.collection('favorites')
+        .where('user_id', '==', user.uid).get();
+      return snap.docs.map(d => d.data());
     }
 
-    function renderFavorites() {
-      const el = document.getElementById('favorites-list');
-      if (!el) return;
-      if (!favoritesData.length) {
-        el.innerHTML = '<p class="empty-state">Aucun favori.<br>Cliquez sur ❤️ sur une fiche outil.</p>';
+    function renderFavorites(data) {
+      const grid = document.getElementById('fav-grid');
+      if (!grid) return;
+      setCount('fav-count', data.length);
+      if (!data.length) {
+        grid.innerHTML = '<p class="empty-state">Aucun favori pour l\'instant.<br><a href="index.html">Découvrir des outils →</a></p>';
         return;
       }
-      el.innerHTML = favoritesData.map(f => `
-        <div class="tool-card-mini">
-          <div class="tool-card-mini-info">
-            <strong>${toolName(f.tool_id)}</strong>
-            ${toolCategory(f.tool_id) ? `<span class="tool-cat-badge">${toolCategory(f.tool_id)}</span>` : ''}
+      grid.innerHTML = data.map(f => {
+        const t = toolsMap[String(f.tool_id)] || {};
+        const url = toolUrl(f.tool_id);
+        return `<div class="fav-card" onclick="window.location.href='${url}'">
+          <div class="fav-card-head">
+            <span class="fav-emoji">${t.emoji || '🤖'}</span>
+            <div>
+              <div class="fav-name">${toolName(f.tool_id)}</div>
+              <div class="fav-cat">${toolCategory(f.tool_id)}</div>
+            </div>
           </div>
-          <div class="tool-card-mini-actions">
-            <a href="${toolUrl(f.tool_id)}" class="btn-ghost btn-xs" target="_blank">Voir →</a>
-            <button class="btn-icon btn-fav-remove" data-id="${f.tool_id}" title="Retirer">✕</button>
-          </div>
-        </div>`).join('');
-      el.querySelectorAll('.btn-fav-remove').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          await sb.from('favorites').delete()
-            .eq('user_id', user.id).eq('tool_id', btn.dataset.id);
-          await loadFavorites();
-          showToast('Retiré des favoris');
-        });
-      });
+          <button class="fav-remove" onclick="event.stopPropagation();removeFavorite('${f.tool_id}')">✕</button>
+        </div>`;
+      }).join('');
     }
+
+    window.removeFavorite = async function(toolId) {
+      const snap = await db.collection('favorites')
+        .where('user_id', '==', user.uid)
+        .where('tool_id', '==', String(toolId)).get();
+      const batch = db.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      showToast('Retiré des favoris');
+      loadFavorites().then(renderFavorites);
+    };
 
     /* ── Collections ── */
     async function loadCollections() {
-      const { data } = await sb.from('collections')
-        .select('*, collection_tools(tool_id)').eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      collectionsData = data || [];
-      setCount('stat-collections',      collectionsData.length);
-      setCount('nav-count-collections', collectionsData.length);
-      setCount('dash-col-count',        collectionsData.length);
-      renderCollections();
+      const snap = await db.collection('collections')
+        .where('user_id', '==', user.uid).orderBy('created_at', 'desc').get();
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }
 
-    function renderCollections() {
-      const el = document.getElementById('collections-list');
-      if (!el) return;
-      if (!collectionsData.length) {
-        el.innerHTML = '<p class="empty-state">Aucune collection.</p>';
+    function renderCollections(data) {
+      const list = document.getElementById('collections-list');
+      if (!list) return;
+      setCount('collections-count', data.length);
+      if (!data.length) {
+        list.innerHTML = '<p class="empty-state">Aucune collection. Créez-en une !</p>';
         return;
       }
-      el.innerHTML = collectionsData.map(c => {
-        const n = c.collection_tools?.length || 0;
-        return `
-          <div class="collection-card">
-            <div class="collection-card-icon">📁</div>
-            <div class="collection-card-info">
-              <strong>${c.name}</strong>
-              <span>${n} outil${n > 1 ? 's' : ''}</span>
-            </div>
-            <button class="btn-icon collection-delete" data-id="${c.id}" title="Supprimer">✕</button>
-          </div>`;
-      }).join('');
-      el.querySelectorAll('.collection-delete').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (!confirm('Supprimer cette collection ?')) return;
-          await sb.from('collections').delete().eq('id', btn.dataset.id).eq('user_id', user.id);
-          await loadCollections();
-        });
-      });
+      list.innerHTML = data.map(c => `
+        <div class="collection-item">
+          <div class="collection-name">${c.name}</div>
+          <div class="collection-meta">${(c.tool_ids || []).length} outil(s)</div>
+          <button class="btn-ghost-sm" onclick="deleteCollection('${c.id}')">Supprimer</button>
+        </div>`).join('');
     }
+
+    window.deleteCollection = async function(id) {
+      await db.collection('collections').doc(id).delete();
+      showToast('Collection supprimée');
+      loadCollections().then(renderCollections);
+    };
+
+    window.createCollection = async function() {
+      const input = document.getElementById('new-collection-name');
+      const name  = input?.value.trim();
+      if (!name) return;
+      await db.collection('collections').add({
+        user_id: user.uid,
+        name,
+        tool_ids: [],
+        created_at: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if (input) input.value = '';
+      showToast('Collection créée !');
+      loadCollections().then(renderCollections);
+    };
 
     /* ── Historique ── */
     async function loadHistory() {
-      const { data } = await sb.from('history')
-        .select('tool_id, visited_at').eq('user_id', user.id)
-        .order('visited_at', { ascending: false }).limit(50);
-      historyData = data || [];
-      setCount('stat-history',    historyData.length);
-      setCount('dash-hist-count', historyData.length);
-      renderHistory();
-      renderDashRecent();
+      const snap = await db.collection('history')
+        .where('user_id', '==', user.uid).orderBy('visited_at', 'desc').limit(50).get();
+      return snap.docs.map(d => d.data());
     }
 
-    function renderHistory() {
-      const el = document.getElementById('history-list');
-      if (!el) return;
-      if (!historyData.length) { el.innerHTML = '<p class="empty-state">Aucun historique.</p>'; return; }
-      const groups = {};
-      historyData.forEach(h => {
-        const date = new Date(h.visited_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
-        if (!groups[date]) groups[date] = [];
-        groups[date].push(h);
-      });
-      el.innerHTML = Object.entries(groups).map(([date, items]) => `
-        <div class="history-group">
-          <div class="history-date">${date}</div>
-          ${items.map(h => `
-            <div class="tool-card-mini">
-              <div class="tool-card-mini-info"><strong>${toolName(h.tool_id)}</strong></div>
-              <a href="${toolUrl(h.tool_id)}" class="btn-ghost btn-xs" target="_blank">Voir →</a>
-            </div>`).join('')}
-        </div>`).join('');
+    function renderHistory(data) {
+      const list = document.getElementById('history-list');
+      if (!list) return;
+      setCount('history-count', data.length);
+      if (!data.length) {
+        list.innerHTML = '<p class="empty-state">Aucun historique.</p>';
+        return;
+      }
+      list.innerHTML = data.map(h => {
+        const url = toolUrl(h.tool_id);
+        return `<div class="history-item" onclick="window.location.href='${url}'">
+          <span class="history-name">${toolName(h.tool_id)}</span>
+          <span class="history-date">${h.visited_at?.toDate ? h.visited_at.toDate().toLocaleDateString('fr-FR') : ''}</span>
+        </div>`;
+      }).join('');
     }
 
-    function renderDashRecent() {
-      const el = document.getElementById('dash-recent-list');
-      if (!el) return;
-      const slice = historyData.slice(0, 5);
-      if (!slice.length) { el.innerHTML = '<p class="empty-state">Aucun outil consulté.</p>'; return; }
-      el.innerHTML = slice.map(h => `
-        <a href="${toolUrl(h.tool_id)}" class="dash-recent-item">
-          <span class="dash-recent-name">${toolName(h.tool_id)}</span>
-          <span class="dash-recent-arrow">→</span>
-        </a>`).join('');
-    }
+    window.clearHistory = async function() {
+      const snap = await db.collection('history').where('user_id', '==', user.uid).get();
+      const batch = db.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      showToast('Historique effacé');
+      loadHistory().then(renderHistory);
+    };
 
     /* ── Notifications ── */
     async function loadNotifications() {
-      const { data } = await sb.from('notifications')
-        .select('*')
-        .or(`user_id.eq.${user.id},user_id.is.null`)
-        .order('created_at', { ascending: false }).limit(30);
-      notificationsData = data || [];
-      const unread = notificationsData.filter(n => !n.is_read).length;
-      setCount('nav-count-notifs',  unread || '');
-      setCount('dash-notif-count',  notificationsData.length);
-      renderNotifications();
+      const snap = await db.collection('notifications')
+        .where('user_id', '==', user.uid).orderBy('created_at', 'desc').limit(20).get();
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }
 
-    function renderNotifications() {
-      const el = document.getElementById('notifications-list');
-      if (!el) return;
-      if (!notificationsData.length) { el.innerHTML = '<p class="empty-state">Aucune notification.</p>'; return; }
-      const icons = { info: '🔔', promo: '💰', update: '🔄', news: '📰' };
-      el.innerHTML = notificationsData.map(n => `
-        <div class="notif-item ${n.is_read ? '' : 'notif-item--unread'}">
-          <span class="notif-icon">${icons[n.type] || '🔔'}</span>
-          <div class="notif-body">
-            <strong class="notif-title">${n.title}</strong>
-            ${n.message ? `<p class="notif-msg">${n.message}</p>` : ''}
-            <span class="notif-date">${new Date(n.created_at).toLocaleDateString('fr-FR')}</span>
-          </div>
-          ${!n.is_read ? `<button class="notif-read-btn" data-id="${n.id}">✓</button>` : ''}
+    function renderNotifications(data) {
+      const list = document.getElementById('notif-list');
+      if (!list) return;
+      const unread = data.filter(n => !n.read).length;
+      setCount('notif-count', unread || '');
+      if (!data.length) {
+        list.innerHTML = '<p class="empty-state">Aucune notification.</p>';
+        return;
+      }
+      list.innerHTML = data.map(n => `
+        <div class="notif-item ${n.read ? '' : 'notif-unread'}" onclick="markNotifRead('${n.id}')">
+          <div class="notif-msg">${n.message || ''}</div>
+          <div class="notif-date">${n.created_at?.toDate ? n.created_at.toDate().toLocaleDateString('fr-FR') : ''}</div>
         </div>`).join('');
-      el.querySelectorAll('.notif-read-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          await sb.from('notifications').update({ is_read: true }).eq('id', btn.dataset.id);
-          await loadNotifications();
-        });
-      });
     }
 
-    /* ── Navigation tabs ── */
-    window.switchTab = function(tabId) {
-      document.querySelectorAll('.profile-nav-item').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-      const btn = document.querySelector(`[data-tab="${tabId}"]`);
-      const tab = document.getElementById(`tab-${tabId}`);
-      if (btn) btn.classList.add('active');
-      if (tab) tab.classList.add('active');
-      history.replaceState(null, '', `#${tabId}`);
+    window.markNotifRead = async function(id) {
+      await db.collection('notifications').doc(id).update({ read: true });
+      loadNotifications().then(renderNotifications);
     };
 
-    /* ── Events profil ── */
-    document.querySelectorAll('.profile-nav-item[data-tab]').forEach(btn => {
-      btn.addEventListener('click', () => window.switchTab(btn.dataset.tab));
-    });
-    document.getElementById('profile-logout-btn')?.addEventListener('click', signOut);
-    document.getElementById('btn-google-signin')?.addEventListener('click', signInWithGoogle);
+    /* ── Paramètres ── */
+    window.saveSettings = async function() {
+      const newUsername = document.getElementById('settings-username')?.value.trim();
+      if (!newUsername) return;
+      await db.collection('profiles').doc(user.uid).update({ username: newUsername });
+      showToast('Profil mis à jour !');
+      setEl('profile-username-display', newUsername);
+      setEl('dash-username', newUsername);
+    };
 
-    document.getElementById('btn-new-collection')?.addEventListener('click', () => {
-      document.getElementById('collection-form').style.display = 'flex';
-      document.getElementById('collection-name-input').focus();
-    });
-    document.getElementById('btn-cancel-collection')?.addEventListener('click', () => {
-      document.getElementById('collection-form').style.display = 'none';
-      document.getElementById('collection-name-input').value = '';
-    });
-    document.getElementById('btn-create-collection')?.addEventListener('click', async () => {
-      const name = document.getElementById('collection-name-input').value.trim();
-      if (!name) return;
-      await sb.from('collections').insert({ user_id: user.id, name });
-      document.getElementById('collection-form').style.display = 'none';
-      document.getElementById('collection-name-input').value = '';
-      await loadCollections();
-      showToast('Collection créée ✓');
-    });
-    document.getElementById('btn-clear-history')?.addEventListener('click', async () => {
-      if (!confirm('Vider tout l\'historique ?')) return;
-      await sb.from('history').delete().eq('user_id', user.id);
-      await loadHistory();
-    });
-    document.getElementById('btn-save-profile')?.addEventListener('click', async () => {
-      const uname = document.getElementById('settings-username').value.trim();
-      await sb.from('profiles').update({ username: uname }).eq('id', user.id);
-      setEl('profile-username-display', uname);
-      setEl('dash-username', uname);
-      showToast('Profil mis à jour ✓');
+    window.deleteAccount = async function() {
+      if (!confirm('Supprimer définitivement votre compte ? Cette action est irréversible.')) return;
+      const batch = db.batch();
+      const cols  = ['favorites', 'collections', 'history', 'notifications'];
+      for (const col of cols) {
+        const snap = await db.collection(col).where('user_id', '==', user.uid).get();
+        snap.docs.forEach(d => batch.delete(d.ref));
+      }
+      await batch.commit();
+      await db.collection('profiles').doc(user.uid).delete();
+      await user.delete();
+      window.location.href = 'index.html';
+    };
+
+    /* ── Onglets ── */
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+      const tabEl  = document.querySelector(`.profile-tab[data-tab="${tab}"]`);
+      const sectEl = document.getElementById(`section-${tab}`);
+      if (tabEl)  tabEl.classList.add('active');
+      if (sectEl) sectEl.classList.add('active');
+
+      if (tab === 'favorites')     loadFavorites().then(renderFavorites);
+      if (tab === 'collections')   loadCollections().then(renderCollections);
+      if (tab === 'history')       loadHistory().then(renderHistory);
+      if (tab === 'notifications') loadNotifications().then(renderNotifications);
+    };
+
+    document.querySelectorAll('.profile-tab').forEach(tab => {
+      tab.addEventListener('click', () => window.switchTab(tab.dataset.tab));
     });
 
-    /* ── Chargement initial ── */
-    await loadToolsMap();
-    await Promise.all([loadFavorites(), loadCollections(), loadHistory(), loadNotifications()]);
+    /* Chargement initial du dashboard */
+    const [favData, colData, histData, notifData] = await Promise.all([
+      loadFavorites(), loadCollections(), loadHistory(), loadNotifications()
+    ]);
+    setCount('dash-fav-count',   favData.length);
+    setCount('dash-col-count',   colData.length);
+    setCount('dash-hist-count',  histData.length);
+    const unread = notifData.filter(n => !n.read).length;
+    setCount('notif-count', unread || '');
 
     const hash = window.location.hash.replace('#', '');
     if (hash) window.switchTab(hash);
   }
 
   /* ════════════════════════════════════════
-     8. PAGE AUTH
+     9. PAGE AUTH
   ════════════════════════════════════════ */
   function initAuth(user) {
     if (user) { window.location.href = 'profile.html'; return; }
@@ -426,14 +425,19 @@
       btn.dataset.orig = btn.dataset.orig || btn.textContent;
       btn.textContent  = loading ? '...' : btn.dataset.orig;
     }
-    function translateError(msg) {
-      if (msg.includes('Invalid login'))       return 'Email ou mot de passe incorrect.';
-      if (msg.includes('Email not confirmed')) return 'Veuillez confirmer votre email.';
-      if (msg.includes('already registered')) return 'Un compte existe déjà avec cet email.';
-      if (msg.includes('Password should be')) return 'Mot de passe trop court (min. 6 caractères).';
-      if (msg.includes('Unable to validate')) return 'Email invalide.';
-      if (msg.includes('rate limit'))         return 'Trop de tentatives. Attendez quelques minutes.';
-      return 'Une erreur est survenue. Réessayez.';
+    function translateError(code) {
+      const map = {
+        'auth/invalid-credential':      'Email ou mot de passe incorrect.',
+        'auth/user-not-found':          'Aucun compte avec cet email.',
+        'auth/wrong-password':          'Mot de passe incorrect.',
+        'auth/email-already-in-use':    'Un compte existe déjà avec cet email.',
+        'auth/weak-password':           'Mot de passe trop court (min. 6 caractères).',
+        'auth/invalid-email':           'Email invalide.',
+        'auth/too-many-requests':       'Trop de tentatives. Attendez quelques minutes.',
+        'auth/network-request-failed':  'Erreur réseau. Vérifiez votre connexion.',
+        'auth/popup-closed-by-user':    'Connexion Google annulée.',
+      };
+      return map[code] || 'Une erreur est survenue. Réessayez.';
     }
 
     /* Onglets */
@@ -490,8 +494,10 @@
       const btn      = document.getElementById('btn-login');
       if (!email || !password) { showMessage('Veuillez remplir tous les champs.'); return; }
       setLoading(btn, true); hideMessage();
-      try { await signIn(email, password); window.location.href = 'profile.html'; }
-      catch (err) { showMessage(translateError(err.message)); }
+      try {
+        await signIn(email, password);
+        window.location.href = 'profile.html';
+      } catch (err) { showMessage(translateError(err.code)); }
       finally { setLoading(btn, false); }
     });
 
@@ -504,14 +510,23 @@
       if (!username || !email || !password) { showMessage('Veuillez remplir tous les champs.'); return; }
       if (password.length < 8) { showMessage('Le mot de passe doit contenir au moins 8 caractères.'); return; }
       setLoading(btn, true); hideMessage();
-      try { await signUp(email, password, username); showMessage('Compte créé ! Vérifiez votre email.', 'success'); }
-      catch (err) { showMessage(translateError(err.message)); }
+      try {
+        await signUp(email, password, username);
+        showMessage('Compte créé ! Vous allez être redirigé…', 'success');
+        setTimeout(() => window.location.href = 'profile.html', 1500);
+      } catch (err) { showMessage(translateError(err.code)); }
       finally { setLoading(btn, false); }
     });
 
     /* Google */
-    document.getElementById('btn-google-login')?.addEventListener('click', signInWithGoogle);
-    document.getElementById('btn-google-signup')?.addEventListener('click', signInWithGoogle);
+    document.getElementById('btn-google-login')?.addEventListener('click', async () => {
+      try { await signInWithGoogle(); }
+      catch (err) { showMessage(translateError(err.code)); }
+    });
+    document.getElementById('btn-google-signup')?.addEventListener('click', async () => {
+      try { await signInWithGoogle(); }
+      catch (err) { showMessage(translateError(err.code)); }
+    });
 
     /* Reset mot de passe */
     document.getElementById('btn-reset')?.addEventListener('click', async () => {
@@ -520,12 +535,9 @@
       if (!email) { showMessage('Entrez votre email.'); return; }
       setLoading(btn, true); hideMessage();
       try {
-        const { error } = await sb.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/auth.html'
-        });
-        if (error) throw error;
+        await resetPassword(email);
         showMessage('Email envoyé ! Vérifiez votre boîte.', 'success');
-      } catch (err) { showMessage(translateError(err.message)); }
+      } catch (err) { showMessage(translateError(err.code)); }
       finally { setLoading(btn, false); }
     });
 
@@ -539,31 +551,81 @@
   }
 
   /* ════════════════════════════════════════
-     9. PAGE INDEX — Favoris depuis Supabase
+     10. PAGE INDEX — Favoris depuis Firestore
   ════════════════════════════════════════ */
   function initIndexFavorites(user) {
-    /* Exposer sur window._sbUser pour app.js */
-    window._sbUser = user || null;
+    window._fbUser = user || null;
 
-    /* Charger les favoris depuis Supabase si connecté */
     if (!user) return;
-    sb.from('favorites').select('tool_id').eq('user_id', user.id)
-      .then(({ data }) => {
-        if (!data) return;
-        /* Mettre à jour le Set de favoris dans app.js */
+    db.collection('favorites').where('user_id', '==', user.uid).get()
+      .then(snap => {
+        const ids = snap.docs.map(d => String(d.data().tool_id));
         if (window._appState) {
-          window._appState.favorites = new Set(data.map(f => String(f.tool_id)));
+          window._appState.favorites = new Set(ids);
           if (typeof window._renderTools === 'function') window._renderTools();
         }
       });
   }
 
   /* ════════════════════════════════════════
-     10. INIT PRINCIPAL
+     11. FAVORIS — toggleFavorite pour app.js
   ════════════════════════════════════════ */
-  const session = await getSession();
-  const user    = session?.user || null;
-  let profile   = null;
+  window.toggleFavoriteFirebase = async function(toolId, event) {
+    event.stopPropagation();
+    const id   = String(toolId);
+    const user = auth.currentUser;
+
+    if (!user) {
+      if (typeof window.showToast === 'function') window.showToast('Connectez-vous pour sauvegarder des favoris');
+      setTimeout(() => window.location.href = 'auth.html', 1500);
+      return;
+    }
+
+    const snap = await db.collection('favorites')
+      .where('user_id', '==', user.uid)
+      .where('tool_id', '==', id).get();
+
+    if (!snap.empty) {
+      const batch = db.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      if (window._appState) window._appState.favorites.delete(id);
+      if (typeof window.showToast === 'function') window.showToast('Retiré des favoris');
+    } else {
+      await db.collection('favorites').add({
+        user_id: user.uid,
+        tool_id: id,
+        added_at: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if (window._appState) window._appState.favorites.add(id);
+      if (typeof window.showToast === 'function') window.showToast('♥ Ajouté aux favoris !');
+    }
+
+    if (typeof window.updateFavCount    === 'function') window.updateFavCount();
+    if (typeof window._renderTools      === 'function') window._renderTools();
+  };
+
+  /* ════════════════════════════════════════
+     12. HISTORIQUE — enregistrer une visite
+  ════════════════════════════════════════ */
+  window.trackToolVisit = async function(toolId) {
+    const user = auth.currentUser;
+    if (!user) return;
+    await db.collection('history').add({
+      user_id:    user.uid,
+      tool_id:    String(toolId),
+      visited_at: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  };
+
+  /* ════════════════════════════════════════
+     13. INIT PRINCIPAL
+  ════════════════════════════════════════ */
+  const user = await new Promise(resolve => {
+    const unsub = auth.onAuthStateChanged(u => { unsub(); resolve(u); });
+  });
+
+  let profile = null;
   if (user) profile = await ensureProfile(user);
 
   /* Nav avatar sur toutes les pages */
@@ -586,7 +648,11 @@
   if (IS_AUTH)  initAuth(user);
   if (IS_INDEX) initIndexFavorites(user);
 
+  /* Compatibilité avec app.js (remplace window._sbUser) */
+  window._sbUser   = user;   /* alias pour ne pas casser app.js existant */
+  window._fbUser   = user;
+
   /* Émettre un événement pour app.js */
-  window.dispatchEvent(new CustomEvent('albexia:ready', { detail: { user, sb } }));
+  window.dispatchEvent(new CustomEvent('albexia:ready', { detail: { user, db } }));
 
 })();

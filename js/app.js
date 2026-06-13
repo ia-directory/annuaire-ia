@@ -50,7 +50,7 @@ const state = {
   activeBlogCat:    'Tous',
   activeGalleryCat: 'Tous',
   searchQuery: '',
-  favorites: new Set(), /* Géré par Supabase via albexia-supabase.js */
+  favorites: new Set(), /* Géré par Firebase via albexia.js */
   toolsPage:   1,
   blogPage:    1,
   galleryPage: 1,
@@ -87,47 +87,28 @@ const galleryColors = {
 };
 
 // ═══════════════════════════════════════
-// FAVORIS — Supabase uniquement
+// FAVORIS — Firebase
 // ═══════════════════════════════════════
 
 async function loadFavoritesFromSupabase() {
-  if (!window._sbUser || !window._supabase) return;
+  /* Alias maintenu pour compatibilité — utilise Firebase via albexia.js */
+  if (!window._fbUser || !window._firebase?.db) return;
   try {
-    const { data } = await window._supabase.from('favorites')
-      .select('tool_id').eq('user_id', window._sbUser.id);
-    state.favorites = new Set((data || []).map(f => String(f.tool_id)));
+    const snap = await window._firebase.db.collection('favorites')
+      .where('user_id', '==', window._fbUser.uid).get();
+    state.favorites = new Set(snap.docs.map(d => String(d.data().tool_id)));
     updateFavCount();
     renderTools();
   } catch (e) { console.warn('loadFavorites:', e); }
 }
 
 async function toggleFavorite(toolId, event) {
-  event.stopPropagation();
-  const id = String(toolId);
-
-  if (!window._sbUser) {
-    showToast('Connectez-vous pour sauvegarder des favoris');
-    setTimeout(() => window.location.href = 'auth.html', 1500);
-    return;
+  /* Délègue à toggleFavoriteFirebase défini dans albexia.js */
+  if (typeof window.toggleFavoriteFirebase === 'function') {
+    await window.toggleFavoriteFirebase(toolId, event);
+    updateFavCount();
+    renderTools();
   }
-
-  if (state.favorites.has(id)) {
-    state.favorites.delete(id);
-    showToast('Retiré des favoris');
-    try {
-      await window._supabase.from('favorites').delete()
-        .eq('user_id', window._sbUser.id).eq('tool_id', id);
-    } catch (e) { console.warn('fav remove:', e); state.favorites.add(id); }
-  } else {
-    state.favorites.add(id);
-    showToast('♥ Ajouté aux favoris !');
-    try {
-      await window._supabase.from('favorites')
-        .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
-    } catch (e) { console.warn('fav add:', e); state.favorites.delete(id); }
-  }
-  updateFavCount();
-  renderTools();
 }
 
 function updateFavCount() {
@@ -257,18 +238,9 @@ async function handleCardClick(toolId, page, url, event) {
   /* Ignore si clic sur bouton ❤️ ou 📁 */
   if (event.target.closest('.fav-btn') || event.target.closest('.col-btn')) return;
 
-  /* Enregistrer dans l'historique Supabase si connecté */
-  if (window._sbUser && window._supabase) {
-    try {
-      const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
-      const { data: existing } = await window._supabase.from('history').select('id')
-        .eq('user_id', window._sbUser.id).eq('tool_id', String(toolId))
-        .gte('visited_at', oneHourAgo).limit(1);
-      if (!existing || existing.length === 0) {
-        await window._supabase.from('history')
-          .insert({ user_id: window._sbUser.id, tool_id: String(toolId) });
-      }
-    } catch (e) { console.warn('history:', e); }
+  /* Enregistrer dans l'historique Firebase si connecté */
+  if (typeof window.trackToolVisit === 'function') {
+    window.trackToolVisit(toolId);
   }
 
   /* Naviguer */
@@ -286,7 +258,7 @@ async function openCollectionMenu(toolId, toolName, event) {
   event.stopPropagation();
 
   /* Pas connecté → rediriger vers auth */
-  if (!window._sbUser) {
+  if (!window._fbUser) {
     showToast('Connectez-vous pour créer des collections');
     setTimeout(() => window.location.href = 'auth.html', 1500);
     return;
@@ -296,16 +268,14 @@ async function openCollectionMenu(toolId, toolName, event) {
   const old = document.getElementById('col-menu-popup');
   if (old) { old.remove(); return; }
 
-  /* Charger les collections */
+  /* Charger les collections depuis Firebase */
   let collections = [];
   try {
-    if (window._supabase) {
-      const { data } = await window._supabase
-        .from('collections')
-        .select('*, collection_tools(tool_id)')
-        .eq('user_id', window._sbUser.id)
-        .order('created_at', { ascending: false });
-      collections = data || [];
+    if (window._firebase?.db) {
+      const snap = await window._firebase.db.collection('collections')
+        .where('user_id', '==', window._fbUser.uid)
+        .orderBy('created_at', 'desc').get();
+      collections = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }
   } catch {}
 
@@ -342,8 +312,8 @@ async function openCollectionMenu(toolId, toolName, event) {
   menu.querySelectorAll('.col-menu-item').forEach(item => {
     item.addEventListener('click', async () => {
       try {
-        await window._supabase.from('collection_tools')
-          .upsert({ collection_id: item.dataset.colId, tool_id: item.dataset.toolId }, { onConflict: 'collection_id,tool_id' });
+        const colRef = window._firebase.db.collection('collections').doc(item.dataset.colId);
+        await colRef.update({ tool_ids: firebase.firestore.FieldValue.arrayUnion(item.dataset.toolId) });
         showToast('✓ Ajouté à la collection');
       } catch { showToast('Déjà dans cette collection'); }
       menu.remove();
@@ -355,11 +325,12 @@ async function openCollectionMenu(toolId, toolName, event) {
     const name = document.getElementById('col-menu-input').value.trim();
     if (!name) return;
     try {
-      const { data: col } = await window._supabase.from('collections')
-        .insert({ user_id: window._sbUser.id, name })
-        .select().single();
-      await window._supabase.from('collection_tools')
-        .insert({ collection_id: col.id, tool_id: String(toolId) });
+      await window._firebase.db.collection('collections').add({
+        user_id: window._fbUser.uid,
+        name,
+        tool_ids: [String(toolId)],
+        created_at: firebase.firestore.FieldValue.serverTimestamp()
+      });
       showToast(`✓ Collection "${name}" créée`);
     } catch { showToast('Erreur création collection'); }
     menu.remove();
@@ -382,11 +353,11 @@ window.openCollectionMenu = openCollectionMenu;
 // INIT SUPABASE USER
 // ═══════════════════════════════════════
 
-/* Écoute l'événement émis par albexia-supabase.js */
+/* Écoute l'événement émis par albexia.js (Firebase) */
 window.addEventListener('albexia:ready', async (e) => {
-  window._sbUser = e.detail.user || null;
-  window._supabase = e.detail.sb || window._supabase;
-  if (window._sbUser) {
+  window._fbUser = e.detail.user || null;
+  window._sbUser = window._fbUser;
+  if (window._fbUser) {
     await loadFavoritesFromSupabase();
   } else {
     state.favorites = new Set();
