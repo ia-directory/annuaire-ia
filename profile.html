@@ -251,12 +251,12 @@
 
   <script type="module">
     import {
-      supabase, getUser, getProfile, updateProfile, signOut,
+      getUser, getProfile, updateProfile, signOut,
       getFavorites, addFavorite, removeFavorite,
       getCollections, createCollection, deleteCollection,
       getHistory, clearHistory,
       initNavProfile
-    } from './js/supabase.js';
+    } from './js/albexia-supabase.js';
 
     /* ─── État global ─── */
     let currentUser    = null;
@@ -377,9 +377,9 @@
       } catch { collectionsData = []; }
 
       const count = collectionsData.length;
-      document.getElementById('stat-collections').textContent     = count;
-      document.getElementById('nav-count-collections').textContent = count;
-      document.getElementById('dash-col-count').textContent        = count;
+      document.getElementById('stat-collections').textContent       = count;
+      document.getElementById('nav-count-collections').textContent  = count;
+      document.getElementById('dash-col-count').textContent         = count;
       renderCollections();
     }
 
