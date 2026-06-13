@@ -91,10 +91,11 @@ const galleryColors = {
 // ═══════════════════════════════════════
 
 async function loadFavoritesFromSupabase() {
-  if (!window._sbUser || !window._albexia) return;
+  if (!window._sbUser || !window._supabase) return;
   try {
-    const favs = await window._albexia.getFavorites(window._sbUser.id);
-    state.favorites = new Set(favs.map(f => String(f.tool_id)));
+    const { data } = await window._supabase.from('favorites')
+      .select('tool_id').eq('user_id', window._sbUser.id);
+    state.favorites = new Set((data || []).map(f => String(f.tool_id)));
     updateFavCount();
     renderTools();
   } catch (e) { console.warn('loadFavorites:', e); }
@@ -113,13 +114,17 @@ async function toggleFavorite(toolId, event) {
   if (state.favorites.has(id)) {
     state.favorites.delete(id);
     showToast('Retiré des favoris');
-    try { await window._albexia.removeFavorite(window._sbUser.id, id); }
-    catch (e) { console.warn('fav remove:', e); state.favorites.add(id); }
+    try {
+      await window._supabase.from('favorites').delete()
+        .eq('user_id', window._sbUser.id).eq('tool_id', id);
+    } catch (e) { console.warn('fav remove:', e); state.favorites.add(id); }
   } else {
     state.favorites.add(id);
     showToast('♥ Ajouté aux favoris !');
-    try { await window._albexia.addFavorite(window._sbUser.id, id); }
-    catch (e) { console.warn('fav add:', e); state.favorites.delete(id); }
+    try {
+      await window._supabase.from('favorites')
+        .upsert({ user_id: window._sbUser.id, tool_id: id }, { onConflict: 'user_id,tool_id' });
+    } catch (e) { console.warn('fav add:', e); state.favorites.delete(id); }
   }
   updateFavCount();
   renderTools();
@@ -253,9 +258,17 @@ async function handleCardClick(toolId, page, url, event) {
   if (event.target.closest('.fav-btn') || event.target.closest('.col-btn')) return;
 
   /* Enregistrer dans l'historique Supabase si connecté */
-  if (window._sbUser && window._albexia) {
-    try { await window._albexia.addToHistory(window._sbUser.id, String(toolId)); }
-    catch (e) { console.warn('history:', e); }
+  if (window._sbUser && window._supabase) {
+    try {
+      const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
+      const { data: existing } = await window._supabase.from('history').select('id')
+        .eq('user_id', window._sbUser.id).eq('tool_id', String(toolId))
+        .gte('visited_at', oneHourAgo).limit(1);
+      if (!existing || existing.length === 0) {
+        await window._supabase.from('history')
+          .insert({ user_id: window._sbUser.id, tool_id: String(toolId) });
+      }
+    } catch (e) { console.warn('history:', e); }
   }
 
   /* Naviguer */
@@ -370,8 +383,9 @@ window.openCollectionMenu = openCollectionMenu;
 // ═══════════════════════════════════════
 
 /* Écoute l'événement émis par albexia-supabase.js */
-window.addEventListener('albexia:userready', async (e) => {
-  window._sbUser = e.detail;
+window.addEventListener('albexia:ready', async (e) => {
+  window._sbUser = e.detail.user || null;
+  window._supabase = e.detail.sb || window._supabase;
   if (window._sbUser) {
     await loadFavoritesFromSupabase();
   } else {
